@@ -1,0 +1,118 @@
+____________________ExpressJs____________________
+
+// Referências
+
+// Conceitos
+
+    HTTP (HyperText Transfer Protocol): Protocolo de transferência de dados na internet.
+
+// Criando um servidor com Express
+
+    1- Criar diretório.                         // mkdir nome_diretório
+
+    2- Criar arquivo 'index.js'.                // touch index.js
+
+    3- Iniciar o NPM (Node Package Manager).    // npm init
+
+    4- Instalar o pacote Express.               // npm i express
+
+    5- Escrever a aplicação do servidor no arquivo 'index.js'.
+
+        import express from "express";
+        const app = express();
+        const port = 3000;
+
+        app.listen(port, () => {
+        console.log(`Server running on port ${port}.`);
+        });
+
+    6- Iniciar o servidor.                      // node index.js
+
+    7- Acessar servidor no navegador.           // localhost:3000
+
+    Obs: Verificar portas abertas no computador.    // netstat -ano | findstr "LISTENING"
+
+// HTTP Requests
+
+    GET     // Requisitar recurso.
+
+        app.get("/", (req, res) => {
+            res.send("Hello World");
+        });
+
+        // Carregando um arquivo.
+            import { dirname } from "path";
+            import { fileURLToPath } from "url";
+            const __dirname = dirname(fileURLToPath(import.meta.url));
+
+            app.get("/", (req, res) => {
+                res.sendFile(__dirname + "/public/index.html");
+            });
+
+    POST    // Enviar recurso.
+
+        app.post("/register", (req, res) => {
+            res.sendStatus(201);
+        });
+
+    PUT     // Substituir recurso.
+
+        app.put("/user/angela", (req, res) => {
+            res.sendStatus(200);
+        });
+
+    PATCH   // Atualizar recurso.
+
+        app.patch("/user/angela", (req, res) => {
+            res.sendStatus(200);
+        });
+
+    DELETE  // Deletar recurso
+
+        app.delete("/user/angela", (req, res) => {
+            //Deleting
+            res.sendStatus(200);
+        });
+
+    // Códigos de resposta HTTP
+
+        100-199     // Informativos.
+        200-299     // Bem sucedidos.
+        300-399     // Redirecionamentos.
+        400-499     // Erros client side.
+        500-599     // Erros server side.
+
+// Postman: Permite testar os HTTP Requests.
+
+// Body Parser (middleware)
+
+    npm i body-parser // Instalando o body-parser
+
+    // Utilizando o body parser:
+
+        import bodyParser from "body-parser";
+        app.use(bodyParser.urlencoded({extended: true}));
+
+        app.post("/submit", (req,sen) => {
+            console.log(req.body);
+        })
+
+// Morgan (middleware personalizado)
+
+    npm i morgan    // Instalar o pacote.
+
+    // Utilizando o morgan:
+
+        import morgan from "morgan";
+
+        app.use(morgan("combined"));
+
+// Criando um middlewar personalizado.
+
+    function logger(req, res, next){
+        console.log("Request Method: ", req.method);
+        console.log("Request URL: ", req.url);
+    next();
+    }
+
+    app.use(logger);

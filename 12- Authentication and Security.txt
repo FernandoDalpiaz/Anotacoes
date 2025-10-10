@@ -1,0 +1,274 @@
+__________Authentication and Security__________
+
+
+NÍVEIS DE SEGURANÇA:
+
+- Level 1: Login e Senha salvos no banco de dados normalmente.
+
+__________
+
+- Level 2: Encryption e Hashing.
+
+__________
+
+- Level 3: Autenticação.
+
+    - Pacote do NPM: bcrypt
+
+        - bcrypt.hash: Transforma senha em hash.
+
+            bcrypt.hash(password, saltRounds, async (err, hash) => {
+                    if (err) {
+                    console.error("Error hashing password:", err);
+                    } else {
+                    const result = await db.query(
+                        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+                        [email, hash]
+                    );
+                    const user = result.rows[0];
+                    req.login(user, (err) => {
+                        console.log("success");
+                        res.redirect("/secrets");
+                    });
+                    }
+                });
+
+        - bcrypt.compare: Comprara uma hash com outra, para verificar se a senha inserida é a correta.
+
+            bcrypt.compare(password, storedHashedPassword, (err, valid) => {
+                    if (err) {
+                        //Error with password check
+                        console.error("Error comparing passwords:", err);
+                        return cb(err);
+                    } else {
+                        if (valid) {
+                        //Passed password check
+                        return cb(null, user);
+                        } else {
+                        //Did not pass password check
+                        return cb(null, false);
+                        }
+                    }
+                    });
+
+__________
+
+- Level 4: Gerenciando Cookies e Sessões.
+
+    - Pacote express-session (cria sessão).
+
+    - Pacote passport e passport-local (middleware de autenticação).
+
+    - Etapas:
+
+        - 1º: Instalar os 3 pacotes citados.
+
+        - 2º: Importar as coleções dos pacotes.
+
+            import session from "express-session";
+            import passport from "passport";
+            import { Strategy } from "passport-local";
+
+        - 3º: Criar Sessão.
+
+            app.use(session({
+                secret: "TOPSECRET",        // Chave secreta.
+                resave: false,              // Determina se o dado irá persistir ou não (ir para um banco de dados ou apenas permanecer salvo no servidor. False = não persiste).
+                saveUninitializes: True     // Forçar a sessão a ser salva na memória do servidor.
+                cookie: {
+                    maxAge: 1000            // Tempo que o cookie permanecerá salvo no browser. 1000 = 1 segundo.
+                }
+            }))
+
+        - 4º: Utilizar o pacote "passport" (sempre estar depoius do 3º passo no código).
+
+            app.use(passport.initialize());
+            app.use(passport.session());
+
+        - 5º: Verificar se o usuário está logado para acessar uma rota.
+
+            req.isAuthenticated()           // Retornará True se estiver logado e False se não estiver logado.
+
+        - 6º: Utilizar o passport-local para registrar uma estratégia (fazer no final do código).
+
+            passport.use(new Strategy (async function verify(username, password, cb) {
+                try {
+                const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
+                    username,
+                ]);
+                if (result.rows.length > 0) {
+                    const user = result.rows[0];
+                    const storedHashedPassword = user.password;
+                    bcrypt.compare(password, storedHashedPassword, (err, valid) => {
+                    if (err) {                                                          // Erro com a verificação de senhas.
+                        console.error("Error comparing passwords:", err);
+                        return cb(err);
+                    } else {
+                        if (valid) {                                                    //Passou na verificação de senhas.
+                        
+                        return cb(null, user);
+                        } else {                                                        //Não passou na verificação de senhas.
+                        
+                        return cb(null, false);
+                        }
+                    }
+                    });
+                } else {
+                    return cb("User not found");
+                }
+                } catch (err) {
+                console.log(err);
+                }
+            }))
+
+        - 7º: Salvar os dados do usuário no armazenamento local (fazer no final do código).
+
+            passport.serializeUser((user, cb) => {
+                cb(null, user);
+            });
+
+            passport.deserializeUser((user, cb) => {
+                cb(null, user);
+            });
+
+        - 8º: Aplicar o método passport.authenticate() na rota de login.
+
+            app.post("/login", passport.authenticate("local", {                         // local -> Estratégia local
+                successRedirect: "/secrets",                                            // Login bem sucedido.
+                failureRedirect: "/login"                                               // Login falhou.
+            }))
+
+        9º: Utilizar o método req.login() para iniciar sessão do usuário automaticamente ao se registrar.
+
+            app.post("/register", async (req, res) => {
+            const email = req.body.username;
+            const password = req.body.password;
+
+            try {
+                const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
+                email,
+                ]);
+
+                if (checkResult.rows.length > 0) {
+                req.redirect("/login");
+                } else {
+                bcrypt.hash(password, saltRounds, async (err, hash) => {
+                    if (err) {
+                    console.error("Error hashing password:", err);
+                    } else {
+                    const result = await db.query(
+                        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",              // RETURNING: retorna todos os dados que foram inseridos.
+                        [email, hash]
+                    );
+                    const user = result.rows[0];
+                    req.login(user, (err) => {                                                          // Método req.login: inicia sessão do usuário e o redireciona.
+                        console.log("success");
+                        res.redirect("/secrets");
+                    });
+                    }
+                });
+                }
+            } catch (err) {
+                console.log(err);
+            }
+            });
+
+__________
+
+- Level 5: Environment Variables.
+
+    - Pacote "dotenv."
+
+    - Etapas:
+
+        - 1º: Criar um arquivo ".env" que irá guardas as Environment Keys.
+
+        - 2º: Formado das Keys no arquivo.
+
+            NOME_DA_KEY="VALOR_DA_KEY"                  // Obs: Sem vírgula ou ponto e vírgula.
+
+        - 3º: Acessando a Environment Key.
+
+            import env from "dotenv";
+            env.config();                               // Inicializa o módulo.
+
+            const segredo = process.env.NOME_DA_KEY
+
+__________
+
+- Level 6: OAuth.
+
+    - Pacote "passport-google-oauth2".
+
+    - Etapas:
+
+        - 1º: Importar pacote.
+
+            import GoogleStrategy from "passport-google-oauth2";
+
+        - 2º: Adicionar a estratégia do Google (logo abaixo da estratégia local no código).
+
+            passport.use(
+                "google",
+                new GoogleStrategy(
+                    {
+                    clientID: process.env.GOOGLE_CLIENT_ID,
+                    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                    callbackURL: "http://localhost:3000/auth/google/secrets",
+                    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+                    },
+                    async (accessToken, refreshToken, profile, cb) => {
+                    try {
+                        console.log(profile);
+                        const result = await db.query("SELECT * FROM users WHERE email = $1", [
+                        profile.email,
+                        ]);
+                        if (result.rows.length === 0) {
+                        const newUser = await db.query(
+                            "INSERT INTO users (email, password) VALUES ($1, $2)",
+                            [profile.email, "google"]
+                        );
+                        return cb(null, newUser.rows[0]);
+                        } else {
+                        return cb(null, result.rows[0]);
+                        }
+                    } catch (err) {
+                        return cb(err);
+                    }
+                    }
+                )
+                );
+
+        - 3º: Criar rota para o botão de logar com Google.
+
+            app.get(
+            "/auth/google",
+            passport.authenticate("google", {
+                scope: ["profile", "email"],
+            })
+            );
+
+        - 4º: Criar rota para a página de acesso restrito.
+
+            app.get(
+            "/auth/google/secrets",
+            passport.authenticate("google", {
+                successRedirect: "/secrets",
+                failureRedirect: "/login",
+            })
+            );
+
+__________
+
+- Logout.
+
+    - Criar rota de logout.
+
+        app.get("/logout", (req, res) => {
+        req.logout(function (err) {
+            if (err) {
+            return next(err);
+            }
+            res.redirect("/");
+        });
+        });

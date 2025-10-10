@@ -1,0 +1,49 @@
+____________________Git____________________
+
+// Comandos
+
+    git init                                // Inicia o git e cria a pasta oculta .git no repositório.
+
+    git status                              // Mostra os arquivos que estão no diretório.
+                                            // Vermelho: Não está na "Staging Area".
+                                            // Verde: Está na "Staging Area".
+
+    git log                                 // Exibe os commits feitos.
+
+    git add nome_arquivo                    // Adiciona o arquivo a "Staging Area"
+    git add .                               // Adiciona todos os arquivos a "Staging Area".
+
+    git rm --cached -r .                    // Remove todos os itens da "Staging Area".
+
+    git commit -m "mensagem_de_commit"      // Dá commit nos arquivos que estão na "Staging Area".
+
+    git diff nome_arquivo                   // Mostra as alterações feitas no arquivo desde o último Commit.
+
+    git checkout nome_arquivo               // Restaura o arquivo para a sua versão salva no último Commit.
+    git checkout nome_branch                // Alterna o repositório para uma de suas branchs.
+
+    git remote add  origin link_repositório   // Ao criar um repositório no GitHub, são exibidas as linhas de comando para auxiliar.
+
+    git branch -M main                  // Cria a main branch.
+    git branch  nome_branch             // Cria uma nova branch.
+    git branch                          // Exibe todas as branchs do repositório.
+
+    git push -u origin main             // Envia os arquivos para o repositório remoto.
+
+    git merge nome_branch               // Junta a branch com a main branch.
+
+    git clone link_repositório          // Clona um repositório remoto para o repositório local.
+
+// Forking: Opção para duplicar um código Open Source, e fazer alterações nele.
+    
+    //Pull request: Retornar as alterações feitas ao dono do código, para inplementá-las, se achar viável.
+
+// Pasta .gitignore: O git ignora todos os arquivos que tiverem seu nome dentro do .gitignore
+
+    // Comentário: #
+
+    // Asterisco: Seleciona todos os arquivos. Ex: *.txt (Ignora todos os arquivos txt).
+
+    // Arquivos pré feitos: https://github.com/github/gitignore 
+
+// Exercícios de Git: https://learngitbranching.js.org/

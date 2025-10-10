@@ -1,0 +1,47 @@
+____________________EJS (Embedded JavaScript)____________________
+
+// Conceitos
+
+    // EJS: Permite inserir JavaScript em arquivos HTML.
+
+// Utilizando EJS:
+
+    O método res.send() carrega apenas arquivos estáticos, logo utiliza-se o método res.render().
+
+    app.post("/submit", (req,res) => {
+        res.render("index.ejs",             // Renderizando o arquivo 'index.ejs'.
+        { name: req.body["name"] }          // Passando para o arquivo o objeto 'name', com valor chave = req.body["name"]. 
+        );
+    });
+
+    <body>
+        <h1>
+            Hello <%= name %>               // O JavaScript fica entre o formato: <%= [código] %>
+        </h1>
+    </body>
+
+// EJS Tags
+
+    <%= variável %>                     // Output da variável.
+
+    <% console.log("Hello") %>          // Executar código JavaScript.
+
+    <%-<h1> Hello </h1> %>              // Renderizar HTML.
+
+    <%% %%>                             // Permite que <% %> não seja interpretado como JavaScript, mas sim exibido.
+
+    <%# Comentário %>                   // Comentário.
+
+    <%- include("<nome_arquivo>") %>    // Insere outro arquivo EJS.
+
+// Locals: Variável utilizada para verificar se o Client side recebeu uma variável do Server side.
+
+    <% if(locals.variável) {} %>        // Se a variável existir = true.
+
+// Passando informações Client Side -> Server Side.
+
+// Aplicando CSS e frameworks estáticos.
+
+    app.use(express.static("public"));
+
+// Templating: <%- include("<nome_arquivo>") %> 

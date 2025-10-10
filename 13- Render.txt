@@ -1,0 +1,33 @@
+____________Passos para fazer upload no Render____________
+
+1º- Script Start no "package.json"
+
+{
+  "scripts": {
+    "start": "node index.js",
+    "build": "npm run build" // se usar TypeScript/compilação
+  }
+}
+
+_____
+
+2º- Adicionar o ".env" no "index.js"
+
+ import env from "dotenv";
+
+ env.config(); 
+
+ const PORT = process.env.PORT
+
+_____
+
+3º- Adicionar variáveis ambientais (dotenv) no dashboard
+
+_____
+
+4º- Conexão do DB no render
+
+const db = new pg.Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // necessário para Render
+});

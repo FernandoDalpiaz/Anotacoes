@@ -1,0 +1,52 @@
+____________________NodeJs____________________
+
+// Referências
+
+    https://www.npmjs.com/          // Site para realizar a busca de pacotes do NPM.
+
+// Conceitos
+
+    Node REPL                       // Read, Eval Print Loop.
+
+// Comandos do console
+
+    node                            // Inicia o Node.
+    node [nome_arquivo]             // Inicia o Node no arquivo, localizado no repositório atual.
+
+    .exit ou ctrl + c duas vezes.   // Finaliza o Node. 
+
+    .help                           // Exibe uma lista de possíveis comandos do NodeJs.
+
+
+// Comandos do NodeJs
+
+    // Pacote fs (File System)
+
+        const fs = require("fs")                // Carrega o pacote fs.
+        import * as fs from 'node:fs/promises'  // Carrega o pacote fs utilizando ECMASCRIPT (Requer adicionar "type: module; no package.json").
+
+        // Write file: Cria um arquivo com conteúdo dentro do repositório atual.
+        fs.writeFile(nome_arquivo, conteúdo_arquivo (err) => {      
+            if (err) throw err;
+            console.log('The file has been saved!');
+        });
+
+        //Read file: Permite ler o conteúdo de um arquivo no repositório atual.
+        fs.readFile('./message.txt', 'utf8', (err, data) => {
+            if (err) throw err;
+            console.log(data);
+        });
+
+// NPM (Node Package Manager)
+
+    npm init                        // Inicia o NPM.
+
+    npm i nome_pacote               // Instala um pacote no NPM.
+
+// Nodemon: Permite que as alterações sejam aplicadas no servidor sem que seja necessária sua reinicialização.
+
+    npm i -g nodemon                // Instala o pacote nodemon globalmente.
+
+    nodemon nome_arquivo            // Executa o arquivo com o nodemon.
+
+    rs                              // Reinicia o servidor.

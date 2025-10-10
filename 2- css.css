@@ -1,0 +1,149 @@
+/* _____HTML_____ */
+
+/* BOAS PRÁTICAS  E CONCEITOS*/
+
+/*Css Inline (prática ruim) -> <tag style="código CSS"></tag> */
+/*Css Interno (prática ruim) -> <style>"código CSS"</style> */
+/*Css Externo (melhor prática) -> <link rel="stylesheet" ref="endereço do arquivo CSS"> */
+
+/*Inspecionar CSS no navegador: CTRL + SHIFT + 1 ou F12 / Extensão Pesticide*/
+
+/*Seletores */
+/*Modelo em cascata (prioridade): Elemento -> Classe -> Atributo -> Id (Do mais específico para o menos específico) */
+/*Prioridade do estilo de CSS: Externo -> Interno -> Inline*/
+
+/* ___________________________________________________________________________________________________________________ */
+
+/* SELETORES */
+
+h1{ /* Elementos */
+    color: red;
+}
+
+.classe{ /* Classe */
+    color: red;
+}
+
+#id{ /* Id */
+    color: red;
+}
+
+h1[color] /* Atributo */
+
+*{ /* Tudo */
+    color: red;
+}
+
+/*COMBINANDO SELETORES */
+
+.classe1 h2{ /*Seleciona o/os filhos h2 da classe1*/
+    color: red;
+}
+
+.classe1 > h2{ /*Seleciona o filho direto h2 da classe1*/
+    color: red;
+}
+
+h1 , h2{ /*Seleciona o grupo h1 e h2*/
+    color: red;
+}
+
+h1 h2{ /*Aplica onde todos os seletores sejam verdadeiros*/
+    color: red;
+}
+
+/* ___________________________________________________________________________________________________________________ */
+
+/* PROPRIEDADES DE COR */
+
+/* Color -> Altera a cor da fonte. O valor pode ser uma cor nomeada, um hex code ou um rgb code. */
+h1{ /* Elementos */
+    color: black; /*Obs: colorhunt.co */
+    color: #000;
+    color: rgb(0,0,0);
+}
+
+/* Background Color -> Altera a cor do background. O valor pode ser uma cor nomeada, um hex code ou um rgb code. */
+h1{
+    background-color: black; /*Obs: colorhunt.co */
+    background-color: #000;
+    background-color: rgb(0,0,0);
+}
+/* ___________________________________________________________________________________________________________________ */
+
+/* PROPRIEDADES DE FONTE */
+
+/* Unidades: 1 Pixel (px) = 0.26mm / 1 Point (pt) = 0.35mm / 1 EM = 100% do pai / REM = 100% da raíz / Fontes nomeadas.*/
+h1{
+    font-weight: 1rem; /*Peso (grossura) da fonte*/
+    font-size: 1rem; /*Tamanho da fonte*/
+    font-family: Arial, Helvetica, sans-serif; /*Tipo da fonte*/ /* Obs: fonts.google.com */
+    text-align: center; /*Alinhamento do texto*/
+    text-transform: uppercase; /*Transformar texto (maiúsculo, minúsculo, etc)*/
+}
+/* ___________________________________________________________________________________________________________________ */
+
+/* BOX MODEL */
+div {
+    height: 8px; /*Altura*/
+    width: 8px; /*Largura*/
+    margin: 32px; /*Margem (distância entre o elemento e outro elemento)*/
+    padding: 16px; /*Preenchimento (distância entre o elemento e a margem)*/
+}
+/* ___________________________________________________________________________________________________________________ */
+
+/* POSICIONAMENTO E DISPLAY */
+
+/* Posicionamento */
+div {
+    position: static; /*Comando para alterar o posicionamento de um elemento*/
+
+    position: relative;
+
+    position: absolute;
+
+    position: fixed;
+    z-index: 1; /*Determina qual elemento sobrepõe outro*/
+
+    left: 10px; right: 10px; top: 10px; bottom: 10px; /*Altera o posicionamento do elemento*/
+}
+
+/*Static (Estático) -> Posicionamento padrão do HTML*/
+/*Relative (Relativo) ->Posicionamento relativo à posição padrão (estática)*/
+/*Absolute (Absoluto) ->Posicionamento relativo ao seu ancestral mais próximo*/
+/*Fixed (Fixo) ->Posicionamento relativo ao canto superior esquerdo da janela do navegador*/
+
+/*Display*/
+
+div{
+    display: inline; /*Ocupa apenas o espaço necessário. Permite que elementos ocupem a mesma linha*/
+    display: block; /*Ocupa a largura (width) completa. Permite determinar height e width*/
+    display: inline-block; /*Permite elementos ocuparem a mesma linha, e determinar height e width*/
+    display: flexbox; /*Mais abaixo*/
+    display: grid;/*Mais abaixo*/
+    float:left; /*O elemento flutua ao redor dos outros elementos*/
+    clear: both; /*O elemento não é afetado por um elemento com float*/
+}
+/* ___________________________________________________________________________________________________________________ */
+
+/* RESPONSIVIDADE */
+
+/*Dispositivos pequenos (celulares na vertical)*/
+
+/*Dispositivos pequenos (celulares na horizontal)*/
+@media (min-width:576px) { h1 {color: blue;}}
+
+/*Dispositivos médios (tablets)*/
+@media (min-width:768px) { h1 {color: blue;}}
+
+/*Dispositivos grandes (desktop)*/
+@media (min-width:992px) { h1 {color: blue;}}
+
+/*Dispositivos x-grandes (desktop grandes)*/
+@media (min-width:1200px) { h1 {color: blue;}}/*Dispositivos pequenos (celulares)*/
+
+/*Dispositivos xx-grandes (desktops maiores)*/
+@media (min-width:1400px) { h1 {color: blue;}}
+/* ___________________________________________________________________________________________________________________ */
+
+/*Flexbox -> Utilizado em layouts unidimensionais*/

@@ -1,0 +1,35 @@
+_____________________Linha de comando____________________
+
+// Referências:
+
+    https://www.learnenough.com/command-line-tutorial   // Guia para aprender linhas de comando.
+
+// Comandos de teclado
+
+    alt + clique    // Seleciona uma parte do comando para poder editá-lo.
+    ctrl + A        // Retorna para o começo do comando.
+    ctrl + E        // Retorna para o fim do comando.
+    ctrl + U        // Limpa o console.
+
+// Comandos básicos
+
+    ls  // Lista os arquivos do diretório atual.
+    
+    pwd // Exibe o endereço do diretório atual.
+
+    cd [endereço_completo]  // Navega para outro diretório.
+    cd [diretório_filho]    // Navega para um diretório filho do atual.
+    cd ~                    // Navega para o diretório raíz do computador.
+    cd .. [diretório]       // Os dois pontos permitem que a navegação retorne para o diretório pai do atual.
+
+    mkdir [nome_diretório]  // Cria um novo diretório dentro do diretório atual.
+
+    touch [nome_arquivo]    // Cria um novo arquivo dentro do diretório atual.
+
+    open [nome_arquivo]     // Abre o arquivo dentro do diretório atual.
+    open -a [endereço_aplicação] [nome_arquivo]     // Abre o arquivo com a aplicação especificada.
+
+    rm [nome_arquivo]       // Remove o arquivo.
+    rm *                    // Remove todos os arquivos do diretório atual.
+    rm -r [nome_diretório]  // Remove o diretório.
+

@@ -1,0 +1,205 @@
+__________Databases __________
+
+// Conceitos
+
+    //SQL: Structured Query Language.
+
+// SQL Database: Banco de dados relacionais (tabelas).
+
+// NoSQL Database: Flexível. Permite alterar os dados de um usuário sem alterar o banco de dados inteiro.
+
+__________SQL __________
+
+// Referências
+
+    // SQL W3 Schools: https://www.w3schools.com/sql/
+
+    // Treino SQL: https://sqliteonline.com/#fiddle-5bbdbaef7288bo2ajn2wly03
+
+// CRUD: CREATE, READ, UPDATE, DESTROY.
+
+// Tipos de dados: INT, STRING, FLOAT, MONEY, etc.
+
+// Comandos:
+
+    // CREATE: Criar estruturas.
+
+        // Tabela:  
+            CREATE TABLE nome_tabela (
+            coluna1 tipo_dado,
+            coluna2 tipo_dado NOT NULL,             // NOT NULL: Significa que o valor dessa coluna não pode ser nulo.
+            coluna3 tipo_dado,
+            ...
+            PRIMARY KEY(coluna1)                    // Primary key: É o atributo que identifica o objeto, tem que ser única.
+        ) ;
+
+        // Ex:
+
+            CREATE  TABLE   products (
+                id  INT NOT NULL,
+                name STRING,
+                price MONEY,
+                PRIMARY KEY(id)
+            )
+        
+    // INSERT: Adicionar dados.
+
+        // Inserindo dados em uma tabela:
+
+            INSERT INTO nome_tabela (coluna1, coluna 2, coluna 3, ...)
+            VALUES (valor1, valor 2, valor3, ...);
+
+            Obs: Se for inserir valores para todas as colunas, as mesmas não precisam ser digitadas no comando.
+
+    // SELECT: Selecionar dados.
+
+        // Selecionando dados de uma tabela:
+
+            SELECT * FROM nome_tabela                   // O asterisco seleciona todos os itens da tabela.
+
+            SELECT coluna1, coluna2 FROM nome_tabela;   // Seleciona apenas as colunas mencionadas da tabela.
+
+        // Utilizando o WHERE: Condição de busca.
+
+            SELECT * FROM nome_tabela
+            WHERE condição;                             // Operadores: = , <> (diferente) , > , < , >= , <= , BETWEEN , LIKE , IN.
+
+    // UPDATE: Atualiza os dados de uma tabela.
+
+        // Atualizando os dados da tabela:
+
+            UPDATE nome_tabela
+            SET coluna1 = valor1, coluna2 = valor2, ...
+            WHERE condição;
+
+    // ALTER: Altera a estrutura de uma tabela.
+
+        // Alterando a estrutura:
+
+            ALTER TABLE nome_tabela
+            ADD coluna4 tipo_dado;
+
+    // DELETE: Deleta dados de uma tabela.
+
+        // Deletando dados:
+
+            DELETE FROM nome_tabela
+            WHERE condição;
+
+    // FOREIGN KEY: Um dado de uma tabela que vem de outra tabela.
+
+        // Ex:
+
+            CREATE TABLE tabela1 (
+            coluna1 tipo_dado,
+            coluna2 tipo_dado,            
+            coluna3 tipo_dado,
+            ...
+            PRIMARY KEY(coluna1)
+            )
+
+            CREATE TABLE tabela2 (
+            coluna4 tipo_dado,
+            coluna5 tipo_dado,             
+            coluna6 tipo_dado,
+            ...
+            PRIMARY KEY(coluna1)
+            FOREIGN KEY (coluna4) REFERENCES tabela1(coluna2)
+            )
+
+    // JOIN: Cria visões selecionando dados de tabelas diferentes.
+
+        // Ex:
+
+            SELECT tabela_pedidos.número_pedido, tabela_clientes.nome, tabela_clientes.sobrenome, tabela_clientes.endereço
+            FROM tabela_pedidos
+            INNER JOIN tabela_clientes ON tabela_pedidos.id_cliente = tabela_clientes.id
+
+__________Postgre SQL __________
+
+// Instalações necessárias:
+
+    // Postgres Server.
+
+    // Pg Admin: Interface gráfica para o Postgres.
+
+    // Link: https://sbp.enterprisedb.com/getfile.jsp?fileid=1258649
+
+// Utilização do Postgres:
+
+    // Documentação: https://www.postgresql.org/docs/
+
+    // Conceitos:
+
+        // Data Types:
+
+            // SERIAL: Torna a coluna serial, ou seja, adiciona um auto incremento na coluna ao serem criadas novas linhas.
+
+                Ex: id SERIAL PRIMARY KEY,
+
+            // VARCHAR(número_caracteres): Permite no máximo o número de caracteres definidos.
+
+            // TEXT: Não requer um tamanho máximo, ao contrário do VARCHAR. 
+
+            // INT: Inteiro.
+
+            // BOOLEAN: Booleano.
+
+    // Utilizando o Postgres:
+
+        // 1- Abrir o pgAdmin.
+
+        // 2- Databases -> Create Database
+
+        // 3- Clicar no Banco de Dados -> Query Tool (Alt + Shift + Q)
+
+        // 4- Schemas -> Public -> Tables -> Rigth Click -> View/Edit Data
+
+        // 5- Schemas -> Public -> Tables -> Rigth Click -> Import/Export Data -> Arquivo CSV. Obs: Habilitar Header nas opções, para ignorar a primeira linha do arquivo.
+
+// Pacote pg: Pacote do NPM que permite integrar o backend com o Postgres.
+
+    //Aplicação do pacote:
+        
+        import Client from "pg";
+
+        const db = new pg.Client({
+            user: "postgres",
+            host: "localhost",
+            database: "mydatabase",
+            password: "password",
+            port:5432,
+        });
+
+        db.connect();
+
+        db.query("SELECT * FROM users", (err,res) => {
+            if(err) {
+                console.error("Error executing query", err.stack);
+            } else {
+                console.log("User data:", res.rows);
+            }
+
+            db.end();
+        });
+
+// Relações
+
+    // Relações 1 para 1: 1 entrada na tabela 1 tem 1 entrada na tabela 2, e o contrário também se aplica.
+
+        // Ex: Tabela Estudantes e tabela Contatos.
+
+    // Relações 1 para muitos: 1 entrada na tabela 1 pode ter várias entradas na tabela 2, enquanto 1 entrada na tabela 2 tem apenas uma entrada na tabela 1.
+
+        // Ex: Tabela Estudantes e tabela DeverDeCasa.
+
+    // Relações muitos para muitos: 1 entrada na tabela 1 pode ter várias entradas na tabela 2,, e o contrário também se aplica.
+
+        // Normalmente se cria uma nova tabela para representar apenas essa relação.
+
+        // Ex: Tabela Estudantes e tabela Matéria -> Tabela Matrícula.
+
+// Aliases: Seleciona uma coluna e exibe com outro nome.
+
+    // Ex: SELECT student.id AS stud
+    // OBS: O termo "AS" é opcional. Ex: SELECT student.id stud  -> Tem o mesmo resultado do exemplo acima.

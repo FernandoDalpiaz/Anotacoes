@@ -1,0 +1,194 @@
+_____APIs - Application Programming Interfaces_____
+
+// Referências
+
+    // Lista de APis: https://github.com/appbrewery/public-api-lists
+
+// Architectural Styles:
+
+    {REST:API}  // É o estilo arquitetônico de API mais utilizado em desenvolvimento Web.
+
+// {REST:API}
+
+    // Utiliza o protocolo HTTP para interagir com a API: GET, POST, PUT, PATCH, DELETE.
+    
+    // Precisa ter um formato padrão de dados. Ex: JSON, XML, JavaScript Notation, etc.
+
+    // Client Side e Server Side são completamente separados. Permite que ambos os lados escalem independentemente do outro lado.
+
+    // Statelessness: Cada pedido do cliente para o servidor deve conter toda a informação necessária.
+
+    // Resource Based: A APi é centrada e utiliza uma URI (Universal Resource Identifier).
+    
+// Structuring API Requests
+
+    link (Ex: https://bored-api.appbrewery.com)   endpoint (Ex: /random)    parameters (Ex:?query=value&query2=value)
+
+    Ex: https://bored-api.appbrewery.com/filter?type=social&participants=2
+
+    link (Ex: https://bored-api.appbrewery.com)   endpoint (Ex: /random) pathparameter(Ex: id,username)
+
+    Ex: https://bored-api.appbrewery.com/activity/5914292
+
+
+// JSON
+
+    // Estrutura: A estrutura é quase idêntica à estrutura JS, porém as chaves (keys) são strings.
+
+        // Ex:
+
+            "name": "Fernando",
+            "education": [
+                {
+                    "degree": "Análise e desenvolvimento de Sistemas",
+                    "university": "UVV",
+                }
+            ]
+
+    // JSON Visualiser: Ajuda a visualizar a estrutura de um arquivo JSON (jsonviewer.stack.hu).
+
+    // Transformar objeto JS em JSON utilizando o pacote JSON:
+
+        // Função stringfy: const jsonData = JSON.stringfy(data);
+
+    // Transformar objeto JSON em JS utilizando o pacote JSON:
+
+        // Função parse: const data = JSON.stringfy(jsonData);
+
+
+// Fazendo Requests em uma API externa a partir do Servidor 
+
+    1- Instalar os módulos Https e axios: 
+        
+        import https from "https";
+        import axios from "axios";
+    
+    2- 
+
+    app.get("/", async(req, res) => {
+        try {
+            const response = await axios.get("https://bored-api.appbrewery.com/random");
+            res.render("index.ejs", {activity:response.data});
+        } catch (error) {
+            console.error("Failed to make request: ", error.message);
+            res.status(500).send("Failed to fetch activity. Please try again");
+        }
+    });
+
+    OBS: Realizando a conexão sem o Axios (desnecessário):
+
+        app.get("/", (req,res) => {
+            const options = {
+                hostname: "bored-api.appbrewery.com",
+                path: "/random",
+                method: "GET",
+            };  
+        
+
+            const request = https.request(options, (response) => {
+                let data = "";
+                response.on("data", (chunk) => {
+                    data += chunk;
+                });
+            
+                response.on("end", () => {
+                    try {
+                        const result = JSON.parse(data);
+                        res.render("index.ejs", {activity:data})
+                    } catch (error) {
+                        console.error("Failed to parse response: ", error.message);
+                        res.status(500).send("Failed to fetch activity. Please try again.")
+                    }
+                });
+            });
+
+            request.on("error", (error) => {
+                console.error("Failed to make request: ", error.message);
+                res.status(500).send("Failed to fetch activity. Please try again.")
+            });
+
+            request.end();
+        })
+
+    // Axios:
+
+        Request: axios.request(config)
+        Get:    axios.get(url[, config])
+        Delete: axios.delete(url[, config])
+        Post: axios.post (url[, data[,config]])
+        Put: axios.put (url[, data[,config]])
+        Patch axios.patch (url[, data[,config]])
+
+// Tipos de API Authentication
+
+    // Autorização:  Permite que você utilize a API.
+    // Autenticação: Permite que você seja identificado como usuário.
+
+    // 0- No Authentication: Normalmente limitam uma quantidade de acessos por tempo.
+
+        app.get("/noAuth", async (req, res) => {
+            try {
+                const result = await axios.get(API_URL + "/random");
+                res.render("index.ejs", { content: JSON.stringify(result.data) });
+            } catch (error) {
+                res.status(404).send(error.message);
+            }
+        });
+
+    // 1- Basic Authentication: Utiliza Base64 Encoding.
+
+        app.get("/basicAuth", async (req, res) => {
+            try {
+                const result = await axios.get(API_URL + "/all?page=2", {
+                auth: {
+                    username: yourUsername,
+                    password: yourPassword,
+                },
+                });
+                res.render("index.ejs", { content: JSON.stringify(result.data) });
+            } catch (error) {
+                res.status(404).send(error.message);
+            }
+        });
+
+    // 2- API KEY Authorization
+
+        app.get("/apiKey", async (req, res) => {
+        try {
+            const result = await axios.get(API_URL + "/filter", {
+            params: {
+                score: 5,
+                apiKey: yourAPIKey,
+            },
+            });
+            res.render("index.ejs", { content: JSON.stringify(result.data) });
+        } catch (error) {
+            res.status(404).send(error.message);
+        }
+        });
+
+    // 3- Token Based Authentication
+
+        const config = {
+        headers: { Authorization: `Bearer ${yourBearerToken}` },
+        };
+
+        app.get("/bearerToken", async (req, res) => {
+            try {
+                const result = await axios.get(API_URL + "/secrets/2", config);
+                res.render("index.ejs", { content: JSON.stringify(result.data) });
+            } catch (error) {
+                res.status(404).send(error.message);
+            }
+        });
+
+// RESTful API
+
+    app.get("/", async (req, res) => {
+        try {
+            await axios.get(url, body, config);         //body = formulário; config = header, auth...
+            res.sendStatus(201);
+        } catch (error) {
+            res.status(404).send(error.response.data);
+        }
+    });
