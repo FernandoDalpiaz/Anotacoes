@@ -18,15 +18,15 @@
 
 // STRINGS
 
-    .lenght(); // Obtém a quantidade de caracteres.
+    arr.lenght(); // Obtém a quantidade de caracteres.
 
-    .slice(começo,fim); // Obtém uma fatia de uma string. Obs: o fim não faz parte da fatia.
+    arr.slice(começo,fim); // Obtém uma fatia de uma string. Obs: o fim não faz parte da fatia.
 
-    .toUpperCase(); // Transforma o caracter em upppercase.
+    arr.toUpperCase(); // Transforma o caracter em upppercase.
 
-    .toLowerCase(); // Transforma o caracter em lowercase.
+    arr.toLowerCase(); // Transforma o caracter em lowercase.
 
-    .tofixed(número de casas); // 
+    arr.tofixed(número_de_casas); // 
 
 // ___________________________________________________________________________________________________________________
 
@@ -441,6 +441,96 @@
             .catch(e => console.log('Erro: ', e))
 
 // ___________________________________________________________________________________________________________________
+
+// ASYNC E AWAIT
+
+    async function executa() {
+        try {
+            const fase1 = await esperaAi('Promise 1', 3000);
+            console.log(fase1);
+            const fase2 = await esperaAi('Promise 2', 1000);
+            console.log(fase2);
+            const fase3 = await esperaAi('Promise 3', 500);
+            console.log(fase3);
+        } catch (error) {
+            console.log('Erro: ', error);
+        }   
+    }
+    executa();
+
+// ___________________________________________________________________________________________________________________
+
+// FETCH API (Entrega promises)
+
+    fetch('pagina1.html', {})
+        .then(resposta => {
+            if (resposta.status !== 200) throw new Error('ERRO 404');       // Direciona direto para o catch se for acionado.
+            return resposta.text();
+        })
+        .then(html => console.log(html))
+        .catch(error => console.error(error));
+
+    // Exemplo
+
+        async function carregaPagina(el) {
+            try {
+                const href = el.getAttribute('href');
+                const response = await fetch(href);
+
+                if(response.status !== 200) throw new Error('Erro 404');
+
+                const html = await response.text();
+                cerregaResultado(html);
+
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        function carregaResultado(response) {
+            const resultado = document.querySelector('.resultado');
+            resultado.innerHTML = response;
+        }
+
+// ___________________________________________________________________________________________________________________
+
+// FETCH API E AXIOS
+
+    fetch('pessoas.json')
+        .then(resposta => resposta.json())
+        .then(json => carregaElementosNaPagina(json))
+        .catch(error => console.error(error));
+
+    function carregaElementosNaPagina(json) {
+        const table = document.createElement('table');
+        for(let pessoa of json) {
+            const tr = document.createElement('tr');
+
+            let td1 = document.createElement('td');
+            td1.innerHTML = pessoa.nome;
+            tr.appendChild(td1);
+
+            let td2 = document.createElement('td');
+            td2.innerHTML = pessoa.idade;
+            tr.appendChild(td2);
+
+            let td3 = document.createElement('td');
+            td3.innerHTML = pessoa.salario;
+            tr.appendChild(td3);
+        }
+        table.appendChild(tr);
+
+        const resultado = document.querySelector('.resultado');
+        resultado = appendChild(table);
+    }
+
+    // Com Axios (importar pacote axios com node)
+
+        axios('pessoas.json')
+            .then(resposta => carregaElementosNaPagina(resposta.data))
+            .catch(error => console.error(error));
+
+// ___________________________________________________________________________________________________________________
 // ___________________________________________________________________________________________________________________
 // ___________________________________________________________________________________________________________________
 
@@ -624,3 +714,512 @@ $("h1").slideDown(); // Exibe o elemento colapsando.
 $("h1").toggle(); //Esconde e reexibe o elemento.
 
 $("h1").animante{opacity:0.95} // Anima o elemento, porém apenas com atributos com valor numérico.
+
+// ___________________________________________________________________________________________________________________
+// ___________________________________________________________________________________________________________________
+// ___________________________________________________________________________________________________________________
+
+// _____TYPESCRIPT_____
+
+// REPOSITÓRIO COM CÓDIGOS DO CURSO
+
+    // https://github.com/luizomf/cursojstypescript
+
+// INSTALAÇÃO DO TYPESCRIPT
+
+    npm i typescript -D
+
+    npm i ts-node -D    // Ts Node
+
+// EXTENSÃO DOS ARQUIVOS TYPESCRIPT
+
+    index.ts
+
+// SCRIPT MODE E MODULE MODE
+
+    // Script mode: Considera todos os arquivos js como um único. É o padrão.
+
+    // Module Mode: Considera cada arquivo como um módulo separado.
+
+        // Para ser ativado, basta exportar algo. Ex:
+
+            export default nome;
+
+// EXTENSÕES UTILIZADAS NO VSCODE
+
+    // 1- Pasta '.vscode': Utilizada para configurar o vscode. Dentro criar um arquivo 'settings.json'.
+
+    // 2- Code Runner: Executar os arquivos typescript no vs code.
+
+        // Configuração na '.vscode':
+
+            {
+                "code-runner.executorMap": {
+                    "typescript": "npx ts-node --files",
+                }
+            }
+
+    // 3- Criação do arquivo tsconfig.json
+
+        {
+        "compilerOptions": {
+            "target": "ES2020",
+            "module": "CommonJS",
+            "strict": true,
+            "esModuleInterop": true,
+            "skipLibCheck": true,
+            "forceConsistentCasingInFileNames": true
+        }
+        }
+
+    // 4- Configurar do ESLINT
+
+    // 5- Configurar o Prettier
+
+    // 6 - tsconfig.json
+
+        // Compiler Options: https://www.typescriptlang.org/docs/handbook/compiler-options.html
+
+        // Criar arquivo tsconfig.json
+
+            npc tsc --init
+
+// ___________________________________________________________________________________________________________________
+
+// Sintaxe de Type Annotations
+
+    // Tipos Básicos
+
+    let nome: string = 'Fernando';                      // string
+    let idade: number = 30;                             // number
+    let adulto: boolean = true;                         // boolean
+    let simbolo: symbol = Symbol('qualquer-symbol');    // symbol
+    let big: bigint = 10n;                              // bigint
+
+    // Arrays
+
+    let arrayDeNumeros: Array<number> = [1,2,3];
+    let arrayDeNumeros2: number[] = [1,2,3];
+
+    // Objetos
+
+    let pessoa: {nome:string, idade:number, adulto?: boolean} = {       // A interrogação mostra que o campo é opcional.
+        nome: 'Fernando',
+        idade: 26,
+        adulto: true
+    }
+
+    // Funções
+
+    function soma(x: number, y: number):number {
+        return x+y
+    };
+
+    const soma2: (x: number, y: number) => number = (x,y) => x + y;
+
+    // Observação: Só inferir o tipo quando o typescript não identificar automaticamente (inferir como 'any').
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "Any"
+
+    // O Tipo Any é retornado quando o Typescript não consegue definir o tipo da variável.
+
+    // Obs: Utilizar o any apenas em último caso.
+
+    // Aplicando o tipo any:
+
+        function showMessage2(msg: any) {
+            return console.log(msg);
+        }
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "Void"
+
+    // Significa que a função/método não retorna nada.
+
+    // Exemplo Função:
+
+        function semRetorno(...args: string[]): void {
+            console.log(args.join(' '));
+        };
+
+    // Exemplo Objeto
+
+        const pessoa = {
+            nome: 'Luiz',
+            sobrenome: 'Silva',
+
+            exibirNome(): void {
+                console.log(this.nome + this.sobrenome);
+            }
+        }
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "Object" (objetos em geral)
+
+    const objetoA: {
+        chaveA: string,
+        chaveB: string,
+        chaveC?: string,            // Chave Opcional (?:)
+        [key: string]: unknown      // Permite que sejam criadas novas chaves
+    } = {
+        chaveA: 'Valor A',
+        chaveB: 'Valor B'
+    }
+
+    objetoA.chaveD = 'Valor D';     // Criação de chave depois de declarar os tipos.
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "Array"
+
+    // Formas de declarar o tipo array: Array<tipo> ou tipo[]
+
+        let array1: Array<string> = ['A', 'B', 'C'];
+
+        let array2: string[] = ['A', 'B', 'C'];
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "Tuple"
+
+    // É um Array com tipos específicos.
+
+    // Exemplo de Tupla
+
+        const dadosCLiente1: [number, string] = [1, 'Fernando'];
+
+        dadosCLiente1[0] = 2;    // A tupla pode ser alterada.
+
+        const dadosCLiente2: [number, string, string?] = [1, 'Fernando'];       // Índice 2 opcional.
+
+        const dadosCLiente3: [number,string, ...string[]] = [1, 'Fernando'];    // Utilizando o rest operator.
+
+    // Read Only
+
+        const dadosCLiente4: readonly [number,string] = [1, 'Fernando'];         // Não pode ser alterada.
+
+// ___________________________________________________________________________________________________________________
+
+// Tipos "Null" e "Undefined"
+
+    // Exemplo Undefined
+
+        export function createPerson (  // Inputs
+            firstName: string,
+            lastName: string
+        ): {                            // Return
+            firstName: string,
+            lastName: string
+        } {                             // Função
+            return {
+                firstName,
+                lastName
+            };
+        };
+
+    // Exemplo Null
+
+        export function squareOf(x: any) {
+            if(typeof x === 'number') return x*x;
+            return null;
+        };
+
+        const x = squareOf(2);  // O resultado dessa função pode ser apenas 'number' ou 'null'.
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "Never"
+
+    // Significa que a função ou método nunca vai retornar nada
+
+    // Exemplo
+
+    function criaErro(): never {
+        throw new Error('Erro Qualquer');
+    };
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "Enum"
+
+    // Exemplo
+
+        enum Cores {
+            VERMELHO,   //0
+            AZUL,       //1
+            AMARELO,    //2
+        }
+
+        console.log(Cores.VERMELHO);    // Output: 0
+
+        console.log(Cores[0])           // Output: 'VERMELHO'
+
+
+        enum Cores {
+            ROXO = 200,
+            VERDE = 240,
+            LARANJA = 'laranja',
+        }
+
+        // Os dois enum Cores são unidos automaticamente por possuírem o mesmo nome.
+
+// ___________________________________________________________________________________________________________________
+
+// Tipo "unknown"
+
+    // Funciona como um 'any', porém de uma forma mais segura.
+
+    let x: unknown;
+    x = 20;
+    let y = 10;
+
+    console.log (x + y);                            // O Typescript avisa que x é unknown, e não aceita a operação.
+
+    if (typeof x === 'number') console.log(x+y);    // Como foi tratado, agora a operação é aceita.
+
+// ___________________________________________________________________________________________________________________
+
+// Union Types
+
+    // Quando a variável possue mais de um tipo.
+
+    // Exemplo
+
+        function addOrConcat(a:number | string, b:number | string) {
+            if (typeof a === 'number' && typeof b === 'number') return a + b;
+            if (typeof a === 'string' && typeof b === 'string') return a + b;
+            return `${a}${b}`;
+        }
+
+// ___________________________________________________________________________________________________________________
+
+// Tipos Literais
+
+    // Exemplo:
+
+        let a = 100 as const;   // O tipo de 'a' passa a ser '100'.
+
+        // Obs: Nesse caso, é melhor criar uma const.
+
+    // Exemplo em uma função:
+
+        function escolhaCor(cor: 'Vermelho' | 'Amarelo' | 'Azul') {     // A variável cor só pode ser do tipo de uma das 3 cores citadas.
+            return cor;
+        }
+
+        console.log(escolhaCor('Vermelho'));                            // O Typescript verifica se o valor é do tipo especificado.
+
+// ___________________________________________________________________________________________________________________
+
+// Type Alias
+
+    // É a criação de tipos.
+
+    // Exemplo
+
+        type Idade = number;
+        type Pessoa = {
+            nome: string;
+            idade: Idade;   // Alias dentro de Alias
+            salario: number;
+            corPreferida?:string;
+        };
+
+        type CorRGB = 'Vermelho' | 'Verde' | 'Azul';
+        type CorCMYK = 'Ciano' | 'Magenta' | 'Amarelo' | 'Preto';
+        type CorPreferida = CorRGB | CorCMYK;                       // União de 2 alias.
+
+
+        const pessoaa: Pessoa = {
+            nome: 'Fernando',
+            idade:26,
+            salario: 0,
+        }
+
+
+        export function setCorPreferida(pessoa:Pessoa, cor:CorPreferida):Pessoa {
+            return {...pessoa, corPreferida: cor}
+        }
+
+        console.log(setCorPreferida(pessoaa, "Azul"));
+        // Output: { nome: 'Fernando', idade: 26, salario: 0, corPreferida: 'Azul' }
+
+// ___________________________________________________________________________________________________________________
+
+// Intersection Types
+
+    // Exemplo
+
+    type TemNome = {nome: string};
+    type TemSobrenome = {sobrenome: string};
+    type TemIdade = {idade: number};
+
+    type Pessoa = TemNome & TemSobrenome & TemIdade;
+
+    const pessoa: Pessoa = {
+        nome: 'Fernando',
+        sobrenome: 'Dalpiaz',
+        idade: 26,
+    }
+
+// ___________________________________________________________________________________________________________________
+
+// Funções como Tipo
+
+    // Exemplo
+
+        type mapStringsCallback = (item: string) => string;
+
+        function mapStrings(array: string[], callbackfn: mapStringsCallback): string[] {
+            const newArray: string[] = [];
+
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                newArray.push(callbackfn(item));
+            }
+
+            return newArray;
+        }
+
+        const abc = ['a', 'b', 'c'];
+
+        const abcMapped = mapStrings(abc, (item) => item.toUpperCase());
+
+        console.log(abcMapped);     // Output: [ 'A', 'B', 'C' ]
+
+// ___________________________________________________________________________________________________________________
+
+// O Structural Type System do Typescript
+
+    // Exemplo
+
+        type VerifyUserFn = (user: User, sentValue: User) => boolean;
+        type User = {username: string, password: string};
+
+        const verifyUser: VerifyUserFn = (user, sentValue) => {
+            return (
+                user.username === sentValue.username && user.password === sentValue.password
+            );
+        };
+
+        const bdUser = {username: 'Joao', password: '123456'};
+        const sentUser = {username: 'Joao', password: '123456'};
+
+        const loggedIn = verifyUser(bdUser, sentUser);
+        console.log(loggedIn);
+
+// ___________________________________________________________________________________________________________________
+
+// Type Assertions
+
+    // Condicional (recomendado)
+
+        const body1 = document.querySelector('body');
+        if(body1) body1.style.background = 'red';
+
+    // Non-null assertion '!' (não é muito recomendado)
+
+        const body2 = document.querySelector('body') !;
+        body2.style.background = 'red';
+
+    // Type Assertion (recomendado e mais utilizado)
+
+        const body3 = document.querySelector('body') as HTMLBodyElement;
+        body3.style.background = 'red';
+
+// ___________________________________________________________________________________________________________________
+
+// Classes em Typescript
+
+    // Exemplo (versão longa):
+
+        export class Empresa {
+            public readonly nome: string;                           // Readonly: Não pode ser alterado.     // Public é redundante, já é o padrão.
+            private readonly colaboradores: Colaborador[] = [];     // A classe também é considerada um tipo.
+            protected readonly cnpj: string;
+
+            constructor(nome: string, cnpj: string) {
+                this.nome = nome;
+                this.cnpj = cnpj;
+            };
+        }
+
+        export class Colaborador {
+
+        }
+
+        const empresa1 = new Empresa('Udemy', '11.111.111/0001-11');
+        // console.log(empresa1);
+
+    // Exemplo (versão reduzida)
+
+        export class Empresa2 {
+            private readonly colaboradores: Colaborador2[] = [];
+
+            constructor(readonly nome: string, protected readonly cnpj: string) {
+                this.nome = nome;
+                this.cnpj = cnpj;
+            };
+
+            adicionaColaborador(colaborador: Colaborador2) {
+                this.colaboradores.push(colaborador);
+            }
+
+            mostraColaboradores() {
+                console.log(this.colaboradores);
+            }
+        }
+
+        export class Colaborador2 {
+            constructor(public readonly nome: string, readonly sobrenome: string) {
+                this.nome = nome;
+                this.sobrenome = sobrenome;
+            }
+        }
+
+        const empresa2 = new Empresa2('Udemy', '11.111.111/0001-11');
+        const colaborador1 = new Colaborador2('Fernando', 'Dalpiaz');
+        empresa2.adicionaColaborador(colaborador1);
+        console.log(empresa2);
+        empresa2.mostraColaboradores();
+
+// ___________________________________________________________________________________________________________________
+
+// Interfaces em Typescript
+
+    // Praticamente idênticas ao Type Alias, porém é mais utilizada em objetos.
+
+    // Exemplo
+
+        interface TipoNome {
+            nome: string;
+        };
+
+        interface TipoSobrenome {
+            sobrenome:string;
+        };
+
+        interface TipoNomeCompleto {
+            nomeCompleto(): string;
+        };
+
+        interface TipoPessoa extends TipoNome, TipoSobrenome, TipoNomeCompleto{}
+
+        export class Pessoa implements TipoPessoa {
+            constructor(public nome: string, public sobrenome: string) {}
+
+            nomeCompleto(): string {
+                return this.nome + ' ' + this.sobrenome;
+            };
+        }
+
+        const pessoa1 = new Pessoa('Fernando', 'Dalpiaz');
+        console.log(pessoa1.nomeCompleto());
+
+// ___________________________________________________________________________________________________________________
+// ___________________________________________________________________________________________________________________
+// ___________________________________________________________________________________________________________________
