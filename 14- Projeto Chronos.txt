@@ -1,0 +1,634 @@
+_____________________________________Projeto Chronos (Pomodoro)_____________________________________             
+
+7. Criando o projeto Chronos:
+
+    7.1- Comando: 
+        
+        npm create vite@latest
+
+    7.2- Selecionar 'React' e depois 'Typescript + SWC'.
+
+    7.3- Configurando o VSCode:
+
+        1º- Criar pasta '.vscode'.
+
+        2º- Criar arquivo 'settings.json' dentro da pasta '.vscode'.
+
+        3º- Configurações do arquivo 'settings.json':
+
+            {
+            "window.zoomLevel": 1,
+            "breadcrumbs.enabled": false,
+            "editor.fontSize": 24,
+            "debug.console.fontSize": 24,
+            "terminal.integrated.fontSize": 24,
+            "editor.glyphMargin": false,
+            "workbench.activityBar.location": "hidden",
+            "editor.lineNumbers": "off",
+            "files.eol": "\n", // Final de linha sempre será LF
+
+            // 🛠 Formatação e Lint
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.formatOnSave": true,
+
+            "editor.codeActionsOnSave": {
+                "source.fixAll.eslint": "explicit"
+            },
+
+            "[javascript]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+            },
+            "[typescript]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+            },
+            "[xml]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+            },
+            "[svg]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+            },
+            "[html]": {
+                "editor.defaultFormatter": "esbenp.prettier-vscode"
+            }
+            }
+
+        4º- Criar arquivo '.prettierrc.json'.
+
+        5º- Configurações do arquivo '.prettierrc.json':
+
+            {
+            "arrowParens": "avoid",
+            "bracketSpacing": true,
+            "htmlWhitespaceSensitivity": "css",
+            "insertPragma": false,
+            "jsxBracketSameLine": false,
+            "jsxSingleQuote": true,
+            "printWidth": 80,
+            "proseWrap": "always",
+            "quoteProps": "as-needed",
+            "requirePragma": false,
+            "semi": true,
+            "singleQuote": true,
+            "tabWidth": 2,
+            "trailingComma": "all",
+            "useTabs": false
+            }
+
+        6º- Comando 'npm run dev' para executar o projeto.
+
+____________________________________________________________________________________________________
+
+8. Configurando SSH Keys, Git e Github
+
+    8.1- Criando chave ssh:
+
+        ssh-keygen.exe
+
+    8.2- Github -> Settings -> SSH and GPG keys -> New SSH Key -> Colar chave criada.
+
+    8.3- Criação do repositório no Github
+
+    8.4- Pegar link SSH do repositório.
+
+    8.5- Configurando o git:
+
+        1º- git init
+
+        2º- git branch -m main
+
+        3º- git config user.name "Fernando Dalpiaz"
+
+        4º- git config user.email "fernandoldalpiaz@gmail.com"
+
+        5º- git config core.eol lf
+
+        6º- git config core.autocrlf input
+
+        7º- Visualizar configurações locais: git config --list --local
+
+    8.6- Criando o primeiro commit:
+
+        1º- git add .
+
+        2º- git commit -m "Commit Inicial"
+
+        3º- git remote add origin git@github.com:FernandoDalpiaz/chronos-pomodoro.git
+
+        4º- git push -u origin main
+
+____________________________________________________________________________________________________
+
+12. Component: criando meu primeiro componente do React com JSX (TSX)
+
+    12.1- APAGAR o conteúdo gerado ao iniciar o Vite:
+
+        - Pasta 'main.tsx':
+
+            import './index.css'
+            import App from './App.tsx'
+
+        - Deletar 'App.css', 'App.tsx' e 'Index.css'.
+
+    12.2- Criar a pasta 'App.tsx'.
+
+    12.3- Criando o componente na pasta 'App.tsx':
+
+        export function App() {
+        return (
+            <>                                                                                  // React Fragment
+            <h1>Olá Mundo (do App)</h1>
+            <p>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto </p>
+            </>
+        );
+        }
+
+    12.4- Importando o componente na pasta 'main.tsx':
+
+        import { App } from './App';
+
+        createRoot(document.getElementById('root')!).render(
+        <StrictMode>
+            <App />
+        </StrictMode>,
+        );
+
+____________________________________________________________________________________________________
+
+13. Importando e usando arquivos de CSS globais
+
+    13.1- Criar pasta 'styles' na pasta 'src'.
+
+    13.2- Criar os arquivos 'global.css' e 'theme.css' na pasta 'styles':
+
+        - theme.css: Utilizada para criar variáveis. Ex:
+
+            :root {
+                --primary: pink;        // Definindo a cor primária como rosa.
+            }
+
+        - global.css: Pode utilizar as variáveis do 'theme.css'. Ex:
+
+            h1 {
+            color: var(--primary);
+            }
+
+
+
+    13.2- Importar 'global.css' e 'theme.css' no 'App.tsx':
+
+____________________________________________________________________________________________________
+
+14. Importando e usando arquivos de CSS Modules com escopo de componente
+
+    14.1- Criar pasta 'components' dentro da pasta 'src'.
+
+    14.2- Criar componente 'Heading.tsx' na pasta 'components':
+
+        import styles from './Heading.module.css';
+
+        export function Heading() {
+        return <h1 className={styles.heading}>Olá Mundo</h1>;               // Importando o .heading do Heading.module.css
+        }
+
+    14.3- Criar componente 'Heading.module.css' na pasta 'components':
+
+        .heading {
+            background-color: brown;
+        }
+
+    14.4- Extensão CSS Modules: Ajuda a auto-preencher as classes na pasta 'Heading.tsx.
+
+____________________________________________________________________________________________________
+
+16. Propriedades (props) e children de componentes no React
+
+    16.1- Adicionar input 'props' no elemento 'Heading.tsx':
+
+        export function Heading(props) {
+            return <h1 className={styles.heading}>{props.children}</h1>;
+        }
+
+    16.2- Agora, ao chamar o elemento no 'App.tsx', pode-se colocar o conteúdo filho e até atributos:
+
+
+        export function App() {
+        return (
+            <>
+            <Heading atributo1={123} atributo2='String Qualquer'>Olá Mundo Novo</Heading>
+            <p>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto </p>
+            </>
+        );
+        }
+
+____________________________________________________________________________________________________
+
+17. Variáveis e Reset de CSS do Chronos
+
+    17.1- Ajustando o 'theme.css':
+
+        :root {
+        --gray-100: #e6e9f0;
+        --gray-200: #cdd3e1;
+        --gray-300: #aab3cc;
+        --gray-400: #555f7d;
+        --gray-500: #454f6a;
+        --gray-600: #363d56;
+        --gray-700: #272f43;
+        --gray-800: #181f2e;
+        --gray-900: #0a0f1a;
+
+        --primary-light: #4de7b7;
+        --primary: #0da170;
+        --primary-dark: #065f46;
+
+        --link-color: #10b981;
+        --link-hover: #0b8a60;
+
+        --success: #22c55e;
+        --warning: #eab308;
+        --error: #991b1b;
+        --info: #0ea5e9;
+
+        --text-over-primary: #0a0f1a;
+        --text-over-primary-dark: #e6e9f0;
+        --text-over-primary-light: #0a0f1a;
+        --text-over-success: #0a0f1a;
+        --text-over-warning: #0a0f1a;
+        --text-over-error: #e6e9f0;
+        --text-over-info: #0a0f1a;
+
+        --text-default: #e6e9f0;
+        --text-muted: #aab3cc;
+
+        --disabled: #555f7d;
+        --text-disabled: #aab3cc;
+        }
+
+    17.2- 'Reset global do CSS no arquivo 'global.css':
+
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+
+        html {
+        font-size: 62.5%;
+        }
+
+        body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+            Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-size: 1.6rem; /* 16 pixels */
+        background-color: var(--gray-900);
+        color: var(--text-default);
+        }
+
+____________________________________________________________________________________________________
+
+18. Finalização do componente Heading e tipagem TypeScript de children (ReactNode)
+
+    18.1- Tipagem do 'Props' no arquivo 'Heading.tsx':
+
+        type HeadingProps = {
+        children: React.ReactNode;
+        };
+
+    18.2- Desestruturação:
+
+        - Sem Desestruturação: 
+
+            export function Heading(props: HeadingProps) {
+                return <h1 className={styles.heading}>{props.children}</h1>;
+            }
+
+        - Com Desestruturação:
+
+            export function Heading({ children }: HeadingProps) {
+                return <h1 className={styles.heading}> {children} </h1>;
+            }
+
+    18.3- Adicionar Botão no Heading:
+
+        1º- https://lucide.dev/     ->  lucide-react
+
+        2º- npm i lucide-react
+
+        3º- Adicionando o botão no 'App.tsx':
+
+            export function App() {
+            return (
+                <>
+                <Heading>
+                    Olá Mundo Novo
+                    <button>
+                    <TimerIcon />
+                    </button>
+                </Heading>
+                <p>Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto </p>
+                </>
+            );
+            }
+            
+        4º- Editando o 'Heading.Module.css':
+
+            .heading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 2.4rem;
+            }
+
+____________________________________________________________________________________________________
+
+20. Criando a estrutura HTML e CSS do nosso app para cada seção do site
+
+    20.1- Demonstração de organização de containers:
+
+        <div className='container-fluid'>
+            <div className='container'>
+                <div className='content'>
+                    <section>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni
+                        tenetur illum rem obcaecati facere doloremque cupiditate,
+                        accusamus eum, voluptatem cumque pariatur saepe laboriosam in non
+                        ipsa quibusdam veniam veritatis? Voluptate?
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        .container-fluid {
+        max-width: auto;
+        }
+
+        .container {
+        max-width: 98rem;
+        margin: 0 auto;
+        }
+
+        .content {
+        margin: 3.2rem;
+        }
+
+    20.2- Containers dessa aplicação:
+
+        <div className='container'>
+          <div className='content'>
+            <section>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni
+              tenetur illum rem obcaecati facere doloremque cupiditate,
+              accusamus eum, voluptatem cumque pariatur saepe laboriosam in non
+              ipsa quibusdam veniam veritatis? Voluptate?
+            </section>
+          </div>
+        </div>
+
+____________________________________________________________________________________________________
+
+21. Movendo o Container para seu próprio React Component
+
+    21.1- Criar arquivo 'Container.tsx':
+
+        import styles from './Container.module.css';
+
+        type ContainerProps = {
+        children: React.ReactNode;
+        };
+
+        export function Container({ children }: ContainerProps) {
+        return (
+            <div className={styles.container}>
+            <div className={styles.content}>{children}</div>
+            </div>
+        );
+        }
+
+    21.2- Criar arquivo 'Container.module.css':
+
+        .container-fluid {
+            max-width: auto;
+        }
+
+        .container {
+            max-width: 98rem;
+            margin: 0 auto;
+        }
+
+        .content {
+            margin: 3.2rem;
+        }
+
+    21.3- Implementando o componente 'Container' no 'App.tsx':
+
+        import { Container } from './components/Container';
+        import { Heading } from './components/Heading';
+
+        import './styles/theme.css';
+        import './styles/global.css';
+
+        export function App() {
+        return (
+            <>
+            <Container>
+                <Heading>LOGO</Heading>
+            </Container>
+            <Container>
+                <Heading>MENU</Heading>
+            </Container>
+            </>
+        );
+        }
+
+____________________________________________________________________________________________________
+
+22. Organizando componentes em pastas padronizadas
+
+    22.1- Exemplo de formato:
+
+        - Pasta: Container
+
+        - Arquivo CSS: styles.module.css
+
+        - index.tsx:    Conteúdo do antigo Container.tsx
+
+____________________________________________________________________________________________________
+
+23. Criando o componente de logo com ícone e link
+
+    23.1- Extensão 'auto rename tag'
+
+    23.2- index.tsx:
+
+        import { TimerIcon } from 'lucide-react';
+        import styles from './styles.module.css';
+
+        export function Logo() {
+        return (
+            <div className={styles.logo}>
+            <a className={styles.logoLink} href='#'>
+                <TimerIcon />
+                <span>Chronos</span>
+            </a>
+            </div>
+        );
+        }
+
+    23.3- styles.module.css:
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2.4rem;
+            padding-top: 3.2rem;
+        }
+
+        .logoLink {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            flex-direction: column;
+            font-size: 4.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--primary);
+            transition: all 0.1s ease-in-out;
+        }
+
+        .logoLink:hover {
+            filter: brightness(80%);
+        }
+
+        .logoLink svg {
+            width: 6.4rem;
+            height: 6.4rem;
+        }
+
+____________________________________________________________________________________________________
+
+24. Criando componente de menu com links e ícones
+
+    24.1- index.tsx:
+
+        import styles from './styles.module.css';
+        import { HouseIcon, HistoryIcon, SettingsIcon, SunIcon } from 'lucide-react';
+
+        export function Menu() {
+        return (
+            <nav className={styles.menu}>
+            <a className={styles.menuLink} href='#'>
+                <HouseIcon />
+            </a>
+            <a className={styles.menuLink} href='#'>
+                <HistoryIcon />
+            </a>
+            <a className={styles.menuLink} href='#'>
+                <SettingsIcon />
+            </a>
+            <a className={styles.menuLink} href='#'>
+                <SunIcon />
+            </a>
+            </nav>
+        );
+        }
+
+    24.2- styles.module.css:
+
+        .menu {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.6rem;
+        }
+
+        .menuLink {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: var(--primary);
+            color: var(--text-over-primary);
+            transition: all 0.1s ease-in-out;
+            padding: 1rem;
+            border-radius: 0.8rem;
+        }
+
+        .menuLink:hover {
+            filter: brightness(80%);
+        }
+
+        .menuLink svg {
+            width: 2.4rem;
+            height: 2.4rem;
+        }
+
+____________________________________________________________________________________________________
+
+25. Criando o componente de CountDown (Contador regressivo)
+
+    25.1- index.tsx:
+
+    import styles from './styles.module.css';
+
+    export function CountDown() {
+        return <div className={styles.container}>00:00</div>;
+    }
+
+    25.2- styles.module.css:
+
+        .container {
+            font-size: clamp(8rem, 30vw, 16rem);
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+____________________________________________________________________________________________________
+
+26. Criando o formulário da página inicial
+
+    26.1- Criando formulário no 'App.tsx':
+
+        <form action=''>
+          <div className='formRow'>
+            <label htmlFor='input'>Task</label>
+            <input id='input' type='text' />
+          </div>
+
+          <div className='formRow'>
+            <p>Lorem ipsum dolor sit amet.</p>
+          </div>
+
+          <div className='formRow'>
+            <p>Ciclos</p>
+            <p>0 0 0 0 0 0 0 </p>
+          </div>
+
+          <div className='formRow'>
+            <p>Enviar</p>
+          </div>
+        </form>
+
+    26.2- Estilizando o formulário no 'global.css':
+
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2.4rem;
+        }
+
+        .formRow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2.4rem;
+        }
+
+____________________________________________________________________________________________________
+
+27. Input: um componente um pouco mais complexo
