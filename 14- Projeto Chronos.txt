@@ -632,3 +632,334 @@ ________________________________________________________________________________
 ____________________________________________________________________________________________________
 
 27. Input: um componente um pouco mais complexo
+
+    27.1- index.tsx:
+
+        type DefaultInputProps = {
+            id: string;
+        } & React.ComponentProps<'input'>;
+
+        export function DefaultInput({ id, type }: DefaultInputProps) {
+        return (
+            <>
+            <label htmlFor={id}>Task</label>
+            <input id={id} type={type} />
+            </>
+        );
+    }
+
+    27.2- Implementando no 'App.tsx':
+
+        <div className='formRow'>
+            <DefaultInput id='input' type='number'></DefaultInput>
+        </div>
+
+____________________________________________________________________________________________________
+
+28. Input: usando condicionais no JSX + "...props" (o restante das propriedades)
+
+    28.1- Alterando o index.tsx:
+
+        type DefaultInputProps = {
+            id: string;
+            labelText: string;
+        } & React.ComponentProps<'input'>;
+
+        export function DefaultInput({
+            id,
+            type,
+            labelText,
+            ...rest
+        }: DefaultInputProps) {
+            return (
+                <>
+                <label htmlFor={id}>{labelText}</label>
+                <input id={id} type={type} {...rest} />
+                </>
+            );
+        }
+
+____________________________________________________________________________________________________
+
+29. Input: adicionando estilos de CSS para input ativo, em foco e desativado
+
+    29.1- styles.module.css:
+
+        .input {
+            background: transparent;
+            text-align: center;
+            border: 0.2rem solid transparent;
+            border-bottom: 0.2rem solid var(--primary);
+            font-size: 1.8rem;
+            padding: 0.8rem;
+            color: var(--text-default);
+            outline: none;
+            transition: all 0.1s ease-in-out;
+        }
+
+        .input:focus {
+            border: 0.2rem solid var(--primary);
+            border-radius: 0.8rem;
+        }
+
+        .input::placeholder {
+            color: var(--gray-500);
+            font-size: 1.4rem;
+            font-style: italic;
+        }
+
+        .input:disabled {
+            border-bottom: 0.2rem solid var(--disabled);
+            color: var(--text-muted);
+        }
+
+    29.2- Mudança no 'App.tsx':
+
+        <div className='formRow'>
+            <DefaultInput
+              id='input'
+              type='text'
+              labelText='task'
+              placeholder='Ex: estudar para a prova'
+            ></DefaultInput>
+          </div>
+
+____________________________________________________________________________________________________
+
+30. Criando o componente Cycles com indicadores do ciclo pomodoro em cores
+
+    30.1- index.tsx:
+
+        import styles from './styles.module.css';
+
+        export function Cycles() {
+        return (
+            <div className={styles.cycles}>
+            <span>Ciclos:</span>
+            <div className={styles.cycleDots}>
+                <span className={`${styles.cycleDot} ${styles.workTime}`}></span>
+                <span className={`${styles.cycleDot} ${styles.shortBreakTime}`}></span>
+                <span className={`${styles.cycleDot} ${styles.workTime}`}></span>
+                <span className={`${styles.cycleDot} ${styles.shortBreakTime}`}></span>
+                <span className={`${styles.cycleDot} ${styles.workTime}`}></span>
+                <span className={`${styles.cycleDot} ${styles.shortBreakTime}`}></span>
+                <span className={`${styles.cycleDot} ${styles.workTime}`}></span>
+                <span className={`${styles.cycleDot} ${styles.longBreakTime}`}></span>
+            </div>
+            </div>
+        );
+        }
+
+    30.2- styles.module.css:
+
+        .cycles {
+            display: flex;
+            flex-direction: column;
+            gap: 1.6rem;
+            text-align: center;
+        }
+
+        .cycleDots {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .cycleDot {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+        }
+
+        .workTime {
+            background-color: var(--warning);
+        }
+
+        .shortBreakTime {
+            background-color: var(--primary);
+        }
+
+        .longBreakTime {
+            background-color: var(--info);
+        }
+
+    30.3- App.tsx:
+
+        <div className='formRow'>
+            <Cycles></Cycles>
+        </div>
+
+____________________________________________________________________________________________________
+
+31. Criando um componente de botão reutilizável com opções
+
+    31.1- index.tsx:
+
+    import styles from './styles.module.css';
+
+    type DefaultButtonProps = {
+    icon: React.ReactNode;
+    color?: 'green' | 'red';
+    } & React.ComponentProps<'button'>;
+
+    export function DefaultButton({
+    icon,
+    color = 'green',
+    ...props
+    }: DefaultButtonProps) {
+    return (
+        <>
+        <button className={`${styles.button} ${styles[color]}`} {...props}>
+            {icon}
+        </button>
+        </>
+    );
+    }
+
+
+    31.2- styles.module.css:
+
+    .button {
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24rem;
+        padding: 0.8rem;
+        border-radius: 0.8rem;
+        margin: 3.2rem 0;
+        transition: all 0.1s ease-in-out;
+    }
+
+    .button svg {
+        width: 3.2rem;
+        height: 3.2rem;
+    }
+
+    .button:hover {
+        filter: brightness(80%);
+    }
+
+    .red {
+        background-color: var(--error);
+        color: var(--text-over-error);
+    }
+
+    .green {
+        background-color: var(--primary);
+        color: var(--text-over-primary);
+    }
+
+
+    31.3- app.tsx:
+
+        <div className='formRow'>
+            <DefaultButton icon={<PlayCircleIcon />} color='green' />
+        </div>
+
+____________________________________________________________________________________________________
+
+32. Criando o componente de footer (rodapé)
+
+    32.1- index.tsx:
+
+        import styles from './styles.module.css';
+
+        export function Footer() {
+        return (
+            <footer className={styles.footer}>
+            <a href=''>Entenda como funciona a técnica pomodoro</a>
+            <a href=''>
+                Chronos Pomodoro &copy; {new Date().getFullYear()} - Feito por Fernando
+                L. Dalpiaz
+            </a>
+            </footer>
+        );
+        }
+
+    32.2- styles.module.css:
+
+        .footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.6rem;
+        }
+
+        .footer a {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            text-decoration: underline;
+        }
+
+    31.3- app.tsx:
+
+        <Container>
+            <Footer />
+        </Container>
+
+____________________________________________________________________________________________________
+
+33. Entendendo o estado e o problema do efeito colateral
+
+    export function App() {
+        let numero = 0;
+
+        function handleClick() {
+            const span = document.getElementById('numero');
+
+            if(!span) return;
+
+            numero += 1;
+            span.innerText = numero.toString();
+        }
+
+        return (<>
+            <Heading>
+                Número: <span id='numero'> {numero} </span> 
+            <Heading/></>
+            
+            <button onClick={handleClick}> Aumenta </button>
+        )
+    }
+
+____________________________________________________________________________________________________
+
+34. Usando useState para o estado com programação reativa
+
+    34.1- useState:
+
+        export function App() {
+            const [numero, configurarNumero] = useState(0);             // Nunca usar atribuição direta (Ex: numero += 1), mas a função 'configurarNumero'.
+
+            function handleClick() {
+                configurarNumero( prevState => prevState + 1);          // Sempre que a função depender do valor anterior, utilizar o prevState.
+            }
+
+            return (<>
+                <Heading>
+                    Número: <span id='numero'> {numero} </span> 
+                <Heading/></>
+                
+                <button onClick={handleClick}> Aumenta </button>
+            )
+        }
+
+    34.2- Lazy inicialization:
+
+        // Coloca uma função no useStat que só será utilizada na primeira vez.
+
+            const [numero, configurarNumero] = useState(() => {
+                console.log('Lazy inicialization');
+                return 0
+            });
+
+____________________________________________________________________________________________________
+
+36. Capturando o evento de clique em link com preventDefault para tema dark e light
