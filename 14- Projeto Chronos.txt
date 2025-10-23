@@ -963,3 +963,700 @@ ________________________________________________________________________________
 ____________________________________________________________________________________________________
 
 36. Capturando o evento de clique em link com preventDefault para tema dark e light
+
+    36.1- 'Index.tsx' do elemento 'Menu':
+
+        type AvailableThemes = 'dark' | 'light';
+
+        const [theme, setTheme] = useState<AvailableThemes>('dark');
+
+        function handleThemeChange(
+            event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+        ) {
+            event.preventDefault();
+            setTheme(theme => {
+            return theme === 'dark' ? 'light' : 'dark';
+            });
+        }
+
+
+        <a
+        className={styles.menuLink}
+        href='#'
+        aria-label='Mudar tema'
+        title='Mudar tema'
+        onClick={handleThemeChange}
+        >
+            <SunIcon />
+        </a>
+
+____________________________________________________________________________________________________
+
+38. useEffect - hook feito para trabalhar com efeitos colaterais no componente
+
+    38.1- Formas de utilização do useEffect:
+
+        1- useEffect sem dependência:
+            
+            useEffect(() => {                   // Executado toda vez que o componente renderiza na tela.
+                console.log('', Date.now())
+            })
+
+        2- useEffect com dependência vazia:
+            
+            useEffect(() => {                   // Executado apenas quando o react renderiza o componente na primeira vez.
+                console.log('', Date.now())
+            }, [])                              // Array de dependências vazio.
+
+        3- useEffect com dependência:
+        
+            useEffect(() => {                   // Executado sempre que o valor da dependência for alterado.
+                console.log('', Date.now()
+            )}, [theme])                        // Informa a dependência.
+
+        - Clean up function: A função useEffect pode retornar uma função de Clean Up. Essa função será executada para limpar 'vestígios' e evitar que a página fique 'suja'.
+
+    38.2- Mudanças no projeto:
+
+        useEffect(() => {
+            document.documentElement.setAttribute('data-theme', theme);
+        }, [theme]);
+
+____________________________________________________________________________________________________
+
+39. Salvando o tema no localStorage e trocando o ícone de sol e lua
+
+    type AvailableThemes = 'dark' | 'light';
+
+    export function Menu() {
+    const [theme, setTheme] = useState<AvailableThemes>(() => {
+        const storageTheme =
+        (localStorage.getItem('theme') as AvailableThemes) || 'dark';
+        return storageTheme;
+    });
+
+    const nextThemeIcon = {
+        dark: <SunIcon />,
+        light: <MoonIcon />,
+    };
+
+    function handleThemeChange(
+        event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    ) {
+        event.preventDefault();
+        setTheme(prevTheme => {
+        return prevTheme === 'dark' ? 'light' : 'dark';
+        });
+    }
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    return (
+        <nav className={styles.menu}>
+        <a
+            className={styles.menuLink}
+            href='#'
+            aria-label='Ir para a Home'
+            title='Ir para a Home'
+        >
+            <HouseIcon />
+        </a>
+        <a
+            className={styles.menuLink}
+            href='#'
+            aria-label='Ver histórico'
+            title='Ver histórico'
+        >
+            <HistoryIcon />
+        </a>
+        <a
+            className={styles.menuLink}
+            href='#'
+            aria-label='Ir para Configurações'
+            title='Ir para Configurações'
+        >
+            <SettingsIcon />
+        </a>
+        <a
+            className={styles.menuLink}
+            href='#'
+            aria-label='Mudar tema'
+            title='Mudar tema'
+            onClick={handleThemeChange}
+        >
+            {nextThemeIcon[theme]}
+        </a>
+        </nav>
+    );
+    }
+
+____________________________________________________________________________________________________
+
+40. Criando a página Home e um template para todas as outras páginas
+
+    40.1- Criando o elemento para o formulário (MainForm):
+
+        import { DefaultInput } from '../DefaultInput';
+        import { Cycles } from '../Cycles';
+        import { DefaultButton } from '../DefaultButton';
+        import { PlayCircleIcon } from 'lucide-react';
+
+        export function MainForm() {
+        return (
+            <form action=''>
+            <div className='formRow'>
+                <DefaultInput
+                id='input'
+                type='text'
+                labelText='task'
+                placeholder='Ex: estudar para a prova'
+                ></DefaultInput>
+            </div>
+
+            <div className='formRow'>
+                <p>Lorem ipsum dolor sit amet.</p>
+            </div>
+
+            <div className='formRow'>
+                <Cycles></Cycles>
+            </div>
+
+            <div className='formRow'>
+                <DefaultButton icon={<PlayCircleIcon />} color='green' />
+            </div>
+            </form>
+        );
+        }
+
+    40.2- Criando um template para as páginas da aplicação: templates/MainTemplate/index.tsx
+
+        import { Container } from '../../components/Container';
+        import { Footer } from '../../components/Footer';
+        import { Logo } from '../../components/Logo';
+        import { Menu } from '../../components/Menu';
+
+        type MainTemplateProps = {
+        children: React.ReactNode;
+        };
+
+        export function MainTemplate({ children }: MainTemplateProps) {
+        return (
+            <>
+            <Container>
+                <Logo />
+            </Container>
+
+            <Container>
+                <Menu />
+            </Container>
+
+            {children}
+
+            <Container>
+                <Footer />
+            </Container>
+            </>
+        );
+        }
+
+    40.3- Criando uma página para a página principal: pages/Home/index.tsx
+
+        import { Container } from '../../components/Container';
+        import { CountDown } from '../../components/CountDown';
+        import { MainForm } from '../../components/MainForm';
+        import { MainTemplate } from '../../templates/MainTemplate';
+
+        export function Home() {
+        return (
+            <MainTemplate>
+            <Container>
+                <CountDown />
+            </Container>
+            <Container>
+                <MainForm />
+            </Container>
+            </MainTemplate>
+        );
+        }
+
+    40.4- Criando uma página para página não encontrada (provisório): pages/NotFound/index.tsx
+
+        import { MainTemplate } from '../../templates/MainTemplate';
+
+        export function Home() {
+        return (
+            <MainTemplate>
+            <p>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi, dolore!
+            </p>
+            </MainTemplate>
+        );
+        }
+
+____________________________________________________________________________________________________
+
+41. Componente GenericHtml para páginas que renderizam HTML
+
+    41.1- index.tsx:
+
+        import styles from './styles.module.css';
+
+        type GenericHtmlProps = {
+        children: React.ReactNode;
+        };
+
+        export function GenericHtml({ children }: GenericHtmlProps) {
+        return <div className={styles.genericHtml}>{children}</div>;
+        }
+
+    41.2- styles.module.css:
+
+        .genericHtml h1 {
+        font-size: 3.2rem;
+        margin-bottom: 1.6rem;
+        }
+
+        .genericHtml h2 {
+        font-size: 2.4rem;
+        margin-bottom: 1.2rem;
+        }
+
+        .genericHtml h3 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        }
+
+        .genericHtml p {
+        font-size: 1.6rem;
+        line-height: 1.6;
+        margin-bottom: 1.6rem;
+        }
+
+        .genericHtml a {
+        color: var(--link-color);
+        text-decoration: none;
+        font-weight: bold;
+        }
+
+        .genericHtml a:hover {
+        text-decoration: underline;
+        }
+
+        .genericHtml ul {
+        padding-left: 2.4rem;
+        }
+
+        .genericHtml li {
+        margin-bottom: 0.8rem;
+        }
+
+        .genericHtml img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.8rem;
+        display: block;
+        margin: 1.6rem 0;
+        }
+
+    41.3- Página NotFound:
+
+        import { Container } from '../../components/Container';
+        import { GenericHtml } from '../../components/GenericHtml';
+        import { Heading } from '../../components/Heading';
+        import { MainTemplate } from '../../templates/MainTemplate';
+
+        export function NotFound() {
+        return (
+            <MainTemplate>
+            <Container>
+                <GenericHtml>
+                <Heading>404 - Página não encontrada 🚀</Heading>
+                <p>
+                    Opa! Parece que a página que você está tentando acessar não existe.
+                    Talvez ela tenha tirado férias, resolvido explorar o universo ou se
+                    perdido em algum lugar entre dois buracos negros. 🌌
+                </p>
+                <p>
+                    Mas calma, você não está perdido no espaço (ainda). Dá pra voltar em
+                    segurança para a <a href='/'>página principal</a> ou{' '}
+                    <a href='/history'>para o histórico</a> — ou pode ficar por aqui e
+                    fingir que achou uma página secreta que só os exploradores mais
+                    legais conseguem acessar. 🧭✨
+                </p>
+                <p>
+                    Se você acha que essa página deveria existir (ou se quiser bater um
+                    papo sobre viagem no tempo e buracos de minhoca), é só entrar em
+                    contato. Caso contrário, use o menu para voltar ao mundo real.
+                </p>
+                <p>
+                    Enquanto isso, fica aqui uma reflexão: "Se uma página não existe na
+                    internet, será que ela existiu de verdade?" 🤔💭
+                </p>
+                </GenericHtml>
+            </Container>
+            </MainTemplate>
+        );
+        }
+
+    41.4- Página AboutPomodoro:
+
+        import { Container } from '../../components/Container';
+        import { GenericHtml } from '../../components/GenericHtml';
+        import { Heading } from '../../components/Heading';
+        import { MainTemplate } from '../../templates/MainTemplate';
+
+        export function AboutPomodoro() {
+        return (
+            <MainTemplate>
+            <Container>
+                <GenericHtml>
+                <Heading>A Técnica Pomodoro 🍅</Heading>
+
+                <p>
+                    A Técnica Pomodoro é uma metodologia de produtividade criada por{' '}
+                    <strong>Francesco Cirillo</strong>, que consiste em dividir o
+                    trabalho em blocos de tempo (os famosos "Pomodoros") intercalados
+                    com pausas. O objetivo é manter o foco total por um período curto e
+                    garantir descansos para evitar o cansaço mental.
+                </p>
+
+                <h2>Como funciona o Pomodoro tradicional?</h2>
+                <ul>
+                    <li>
+                    <strong>1. Defina uma tarefa</strong> que você deseja realizar.
+                    </li>
+                    <li>
+                    <strong>2. Trabalhe nela por 25 minutos</strong> sem interrupções.
+                    </li>
+                    <li>
+                    <strong>3. Faça uma pausa curta de 5 minutos</strong>.
+                    </li>
+                    <li>
+                    <strong>4. A cada 4 ciclos, faça uma pausa longa</strong>{' '}
+                    (geralmente 15 a 30 minutos).
+                    </li>
+                </ul>
+
+                <h2>
+                    Mas no <strong>Chronos Pomodoro</strong> tem um diferencial 🚀
+                </h2>
+
+                <p>
+                    Nosso app segue o conceito original, mas com algumas melhorias e
+                    personalizações pra deixar o processo ainda mais eficiente:
+                </p>
+
+                <h3>⚙️ Personalização do tempo</h3>
+                <p>
+                    Você pode configurar o tempo de foco, descanso curto e descanso
+                    longo do jeito que quiser! Basta acessar a{' '}
+                    <a href='/settings'>página de configurações</a> e ajustar os minutos
+                    como preferir.
+                </p>
+
+                <h3>🔁 Ciclos organizados em sequência</h3>
+                <p>
+                    A cada ciclo completado, uma nova task é adicionada automaticamente
+                    ao seu histórico, e o app já sugere o próximo ciclo (foco ou
+                    descanso).
+                </p>
+                <p>
+                    <strong>Nosso padrão:</strong>
+                </p>
+                <ul>
+                    <li>
+                    Ciclos <strong>ímpares</strong>: Trabalho (foco).
+                    </li>
+                    <li>
+                    Ciclos <strong>pares</strong>: Descanso curto.
+                    </li>
+                    <li>
+                    Ciclo <strong>8</strong>: Descanso longo especial, pra resetar o
+                    ciclo completo.
+                    </li>
+                </ul>
+
+                <h3>🍅 Visualização dos ciclos</h3>
+                <p>
+                    Logo abaixo do cronômetro, você verá bolinhas coloridas
+                    representando os ciclos:
+                </p>
+                <ul>
+                    <li>🟡 Amarelo: Ciclo de trabalho (foco).</li>
+                    <li>🟢 Verde: Descanso curto.</li>
+                    <li>🔵 Azul: Descanso longo (aparece a cada 8 ciclos).</li>
+                </ul>
+
+                <p>
+                    Assim, você sempre sabe em que parte do processo está e o que vem a
+                    seguir. Não precisa mais anotar no papel ou ficar calculando de
+                    cabeça!
+                </p>
+
+                <h3>📊 Histórico automático</h3>
+                <p>
+                    Todas as suas tarefas e ciclos concluídos ficam salvos no{' '}
+                    <a href='/history'>histórico</a>, com status de completas ou
+                    interrompidas. Assim, você consegue acompanhar sua evolução ao longo
+                    do tempo.
+                </p>
+
+                <h2>Por que usar o Chronos Pomodoro?</h2>
+                <ul>
+                    <li>✅ Organize seu foco com clareza.</li>
+                    <li>✅ Trabalhe e descanse na medida certa.</li>
+                    <li>✅ Personalize seus próprios ciclos e tempos.</li>
+                    <li>✅ Acompanhe seu histórico automaticamente.</li>
+                </ul>
+
+                <p>
+                    <strong>Pronto pra focar?</strong> Bora lá{' '}
+                    <a href='/'>voltar para a página inicial</a> e iniciar seus
+                    Pomodoros! 🍅🚀
+                </p>
+
+                <p>
+                    <em>"Foco total, sem pressa, sem pausa, só vai!"</em> 💪🧘‍♂️
+                </p>
+                </GenericHtml>
+            </Container>
+            </MainTemplate>
+        );
+        }
+
+____________________________________________________________________________________________________
+
+42. Definindo os models (modelos) da aplicação TaskModel e TaskStateModel
+
+    42.1- models/TaskModel.ts
+
+        import type { TaskStateModel } from './TaskStateModel';
+
+        export type TaskModel = {
+        id: string;
+        name: string;
+        duration: number;
+        startDate: number;
+        completeDate: number | null;
+        interruptDate: number | null;
+        type: keyof TaskStateModel['config'];
+        };
+
+
+    42.2- models/TaskStateModel.ts
+
+        import type { TaskModel } from './TaskModel';
+
+        export type TaskStateModel = {
+        tasks: TaskModel[];
+        secondsRemaining: number;
+        formattedSecondsRemaining: string;
+        activeTask: TaskModel | null;
+        currentCycle: number;
+        config: {
+            workTime: number;
+            shortBreakTime: number;
+            longBreakTime: number;
+        };
+        };
+
+____________________________________________________________________________________________________
+
+47. Context API - criando um context com createContext, useContext + Provider
+
+    47.1- Contexts/TaskContext/index.tsx:
+
+        import { createContext } from "react";
+
+        export const TaskContext = createContext({
+        chave: 'valor',
+        })
+
+    47.2- App.tsx:
+
+        <TaskContext.Provider value={{outrovalor: 'abc'}}>
+            <Home />;
+        </TaskContext.Provider>
+
+____________________________________________________________________________________________________
+
+48. Context API - movendo nosso estado real para dentro do contexto
+
+    48.1- Contexts/TaskContext/index.tsx:
+
+        import { createContext, useContext } from 'react';
+        import type { TaskStateModel } from '../../models/TaskStateModel';
+
+        const initialState: TaskStateModel = {
+        tasks: [],
+        secondsRemaining: 0,
+        formattedSecondsRemaining: '00:00',
+        activeTask: null,
+        currentCycle: 0,
+        config: {
+            workTime: 25,
+            shortBreakTime: 5,
+            longBreakTime: 15,
+        },
+        };
+
+        const initialContextValue = {
+        state: initialState,
+        setState: () => {},
+        };
+
+        type TaskContextProps = {
+        state: TaskStateModel;
+        setState: React.Dispatch<React.SetStateAction<TaskStateModel>>;
+        };
+
+        export const TaskContext = createContext<TaskContextProps>(initialContextValue);
+
+        type TaskContextProviderProps = {
+        children: React.ReactNode;
+        };
+
+        export function TaskContextProvider({ children }: TaskContextProviderProps) {
+        return (
+            <TaskContext.Provider value={initialContextValue}>
+            {children}
+            </TaskContext.Provider>
+        );
+        }
+
+        export function useTaskContext() {
+        return useContext(TaskContext);
+        }
+
+    48.2- App.tsx:
+
+        export function App() {
+            return (
+                <TaskContextProvider>
+                <Home />
+                </TaskContextProvider>
+            );
+        }
+    
+    48.3- CountDown/index.tsx:
+
+        export function CountDown() {
+            const taskContext = useTaskContext();
+            console.log(taskContext);
+            
+            return <div className={styles.container}>00:00</div>;
+        }
+
+____________________________________________________________________________________________________
+
+50. Organizando o contexto em arquivos separados
+
+    50.1- TaskContext\initialTaskState.ts
+
+        import type { TaskStateModel } from '../../models/TaskStateModel';
+
+        export const initialTaskState: TaskStateModel = {
+        tasks: [],
+        secondsRemaining: 0,
+        formattedSecondsRemaining: '00:00',
+        activeTask: null,
+        currentCycle: 0,
+        config: {
+            workTime: 25,
+            shortBreakTime: 5,
+            longBreakTime: 15,
+        },
+        };
+
+
+    50.2- TaskContext\taskContext.tsx
+
+        import { createContext } from 'react';
+        import type { TaskStateModel } from '../../models/TaskStateModel';
+        import { initialTaskState } from './initialTaskState';
+
+        type TaskContextProps = {
+        state: TaskStateModel;
+        setState: React.Dispatch<React.SetStateAction<TaskStateModel>>;
+        };
+
+        const initialContextValue = {
+        state: initialTaskState,
+        setState: () => {},
+        };
+
+        export const TaskContext = createContext<TaskContextProps>(initialContextValue);
+
+    50.3- TaskContext\taskContextProvider.tsx
+
+        import { useState } from 'react';
+        import { initialTaskState } from './initialTaskState';
+        import { TaskContext } from './taskContext';
+
+        type TaskContextProviderProps = {
+        children: React.ReactNode;
+        };
+
+        export function TaskContextProvider({ children }: TaskContextProviderProps) {
+        const [state, setState] = useState(initialTaskState);
+
+        return (
+            <TaskContext.Provider value={{ state, setState }}>
+            {children}
+            </TaskContext.Provider>
+        );
+        }
+
+    50.4- TaskContext\useTaskContext.ts
+
+        import { useContext } from 'react';
+        import { TaskContext } from './taskContext';
+
+        export function useTaskContext() {
+        return useContext(TaskContext);
+        }
+
+____________________________________________________________________________________________________
+
+51. Capturando o evento submit do formulário (onSubmit com preventDefault)
+
+    51.1- MainForm/index.tsx
+
+        export function MainForm() {
+        function handleCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
+            event.preventDefault();
+            console.log('Deu certo');
+        }
+
+        return (
+            <form onSubmit={handleCreateNewTask} className='form' action=''>
+            <div className='formRow'>
+                <DefaultInput
+                id='input'
+                type='text'
+                labelText='task'
+                placeholder='Ex: estudar para a prova'
+                ></DefaultInput>
+            </div>
+
+            <div className='formRow'>
+                <p>Nesse ciclo foque por 25 min.</p>
+            </div>
+
+            <div className='formRow'>
+                <Cycles></Cycles>
+            </div>
+
+            <div className='formRow'>
+                <DefaultButton icon={<PlayCircleIcon />} color='green' />
+            </div>
+            </form>
+        );
+        }
+
+____________________________________________________________________________________________________
+
+52. Input controlado no React com "value", "onChange" e useState
