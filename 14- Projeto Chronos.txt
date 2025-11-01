@@ -1,6 +1,6 @@
-_____________________________________Projeto Chronos (Pomodoro)_____________________________________             
+_____________________________________Projeto Focus (Pomodoro)_____________________________________             
 
-7. Criando o projeto Chronos:
+7. Criando o projeto Focus:
 
     7.1- Comando: 
         
@@ -112,7 +112,7 @@ ________________________________________________________________________________
 
         2º- git commit -m "Commit Inicial"
 
-        3º- git remote add origin git@github.com:FernandoDalpiaz/chronos-pomodoro.git
+        3º- git remote add origin git@github.com:FernandoDalpiaz/Focus-pomodoro.git
 
         4º- git push -u origin main
 
@@ -222,7 +222,7 @@ ________________________________________________________________________________
 
 ____________________________________________________________________________________________________
 
-17. Variáveis e Reset de CSS do Chronos
+17. Variáveis e Reset de CSS do Focus
 
     17.1- Ajustando o 'theme.css':
 
@@ -468,7 +468,7 @@ ________________________________________________________________________________
             <div className={styles.logo}>
             <a className={styles.logoLink} href='#'>
                 <TimerIcon />
-                <span>Chronos</span>
+                <span>Focus</span>
             </a>
             </div>
         );
@@ -869,7 +869,7 @@ ________________________________________________________________________________
             <footer className={styles.footer}>
             <a href=''>Entenda como funciona a técnica pomodoro</a>
             <a href=''>
-                Chronos Pomodoro &copy; {new Date().getFullYear()} - Feito por Fernando
+                Focus Pomodoro &copy; {new Date().getFullYear()} - Feito por Fernando
                 L. Dalpiaz
             </a>
             </footer>
@@ -1341,7 +1341,7 @@ ________________________________________________________________________________
                 </ul>
 
                 <h2>
-                    Mas no <strong>Chronos Pomodoro</strong> tem um diferencial 🚀
+                    Mas no <strong>Focus Pomodoro</strong> tem um diferencial 🚀
                 </h2>
 
                 <p>
@@ -1404,7 +1404,7 @@ ________________________________________________________________________________
                     do tempo.
                 </p>
 
-                <h2>Por que usar o Chronos Pomodoro?</h2>
+                <h2>Por que usar o Focus Pomodoro?</h2>
                 <ul>
                     <li>✅ Organize seu foco com clareza.</li>
                     <li>✅ Trabalhe e descanse na medida certa.</li>
@@ -2224,3 +2224,199 @@ ________________________________________________________________________________
 65. useReducer com objeto em state e actions
 
     65.1- Exemplo básico de reducer com objeto:
+
+        type TaskContextProviderProps = {
+            children: React.ReactNode;
+        };
+
+        export function TaskContextProvider({ children }: TaskContextProviderProps) {
+        const [state, setState] = useState(initialTaskState);
+
+        type ActionType = {
+            type: string;
+            payload?: number;
+        };
+
+        const [myState, dispatch] = useReducer(
+            (state, action: ActionType) => {
+            console.log(state, action);
+
+            switch (action.type) {
+                case 'INCREMENT': {
+                if (!action.payload) return state;
+                return {
+                    ...state,
+                    secondsRemaining: state.secondsRemaining + action.payload,
+                };
+                }
+            }
+            return state;
+            },
+            {
+            secondsRemaining: 0,
+            },
+        );
+
+        // useEffect(() => {
+        //   console.log(state);
+        // }, [state]);
+
+        return (
+            <TaskContext.Provider value={{ state, setState }}>
+            <h1>O estado é: {JSON.stringify(myState)}</h1>
+            <button
+                onClick={() => {
+                dispatch({ type: 'INCREMENT', payload: 10 });
+                }}
+            >
+                Incrementar
+            </button>
+            </TaskContext.Provider>
+        );
+        }
+
+____________________________________________________________________________________________________
+
+67. TypeScript + Reducer: criando actions bem tipadas e escaláveis
+
+    // useReducer <- hook do React que recebe um reducer e um estado inicial
+    // reducer <- função que recebe o estado atual e uma ação, e retorna o novo estado
+    // state <- o estado atual
+    // action <- a ação disparada, geralmente é um objeto com type e (opcionalmente) payload
+    // type <- o tipo da ação, geralmente uma string (pode ser enum, constante, etc)
+    // payload <- os dados extras enviados junto com a action, se necessário para atualizar o estado
+
+    67.1- taskActions
+
+        import type { TaskModel } from '../../models/TaskModel';
+
+        export const TaskActionTypes = {
+        START_TASK: 'START_TASK',
+        INTERRUPT_TASK: 'INTERRUPT_TASK',
+        RESET_STATE: 'RESET_STATE',
+        } as const;
+
+        export type TaskActionsWithPayload =
+        | {
+            type: typeof TaskActionTypes.START_TASK;
+            payload: TaskModel;
+            }
+        | {
+            type: typeof TaskActionTypes.INTERRUPT_TASK;
+            payload: TaskModel;
+            };
+
+        export type TaskActionsWithoutPayload = {
+        type: typeof TaskActionTypes.RESET_STATE;
+        };
+
+        export type TaskActionModel =
+        | TaskActionsWithPayload
+        | TaskActionsWithoutPayload;
+
+
+    67.2- taskReducer
+
+        import type { TaskStateModel } from '../../models/TaskStateModel';
+        import { TaskActionTypes, type TaskActionModel } from './taskActions';
+
+        export function taskReducer(
+        state: TaskStateModel,
+        action: TaskActionModel,
+        ): TaskStateModel {
+        switch (action.type) {
+            case TaskActionTypes.START_TASK: {
+            return state;
+            }
+            case TaskActionTypes.INTERRUPT_TASK: {
+            return state;
+            }
+            case TaskActionTypes.RESET_STATE: {
+            return state;
+            }
+        }
+
+        return state; // Sempre retornar o state
+        }
+
+____________________________________________________________________________________________________
+
+69. Criando o componente Tips para dar sugestões ao usuário sobre a tarefa e ciclo
+
+    69.1- Tips/index.tsx:
+
+        export function Tips() {
+        const { state } = useTaskContext();
+
+        const nextCycle = getNextCycle(state.currentCycle);
+        const nextCycleType = getNextCycleType(nextCycle);
+
+        const tipsForWhenActiveTask = {
+            workTime: <span>Hora de focar.</span>,
+            shortBreakTime: <span>Hora de descansar.</span>,
+            longBreakTime: <span>Hora de descansar.</span>,
+        };
+
+        const tipsForNoActiveTask = {
+            workTime: (
+            <span>No próximo ciclo foque por {state.config.workTime} minutos.</span>
+            ),
+            shortBreakTime: (
+            <span>
+                No próximo ciclo descanse por {state.config.shortBreakTime} minutos.
+            </span>
+            ),
+            longBreakTime: (
+            <span>
+                No próximo ciclo descanse por {state.config.longBreakTime} minutos.
+            </span>
+            ),
+        };
+
+        return (
+            <>
+            {!!state.activeTask && tipsForWhenActiveTask[state.activeTask.type]}
+            {!state.activeTask && tipsForNoActiveTask[nextCycleType]}
+            </>
+        );
+        }
+____________________________________________________________________________________________________
+
+71. Criando um Singleton para gerenciar o worker (TimerWorkerManager)
+
+    71.1- TimerWorkerManager
+
+        let instance: TimerWorkerManager | null = null;
+
+        export class TimerWorkerManager {
+        private worker: Worker;
+
+        private constructor() {
+            this.worker = new Worker(new URL('./timerWorker.js', import.meta.url));
+        }
+
+        static getInstance() {
+            if (!instance) {
+            instance = new TimerWorkerManager();
+            }
+
+            return instance;
+        }
+
+        postMessage(message: any) {
+            this.worker.postMessage(message);
+        }
+
+        onmessage(cb: (e: MessageEvent) => void) {
+            this.worker.onmessage = cb;
+        }
+
+        terminate() {
+            this.worker.terminate();
+            instance = null;
+        }
+        }
+
+____________________________________________________________________________________________________
+
+FIM
